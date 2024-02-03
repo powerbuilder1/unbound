@@ -368,6 +368,7 @@ daemon_open_shared_ports(struct daemon* daemon)
 			daemon->reuseport = 1;
 #endif
 		/* try to use reuseport */
+		printf("[daemon.c // daemon_open_shared_ports()]: Daemon call listening_ports_open() func\n\n");
 		p0 = listening_ports_open(daemon->cfg, resif, num_resif,
 			&daemon->reuseport);
 		if(!p0) {
@@ -423,6 +424,8 @@ daemon_open_shared_ports(struct daemon* daemon)
 			}
 		}
 		config_del_strarray(resif, num_resif);
+
+		printf("Listening Port: %d, Port(from cfg): %d\n", daemon->listening_port, daemon->cfg->port);
 		daemon->listening_port = daemon->cfg->port;
 	}
 	if(!daemon->cfg->remote_control_enable && daemon->rc_port) {

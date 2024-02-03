@@ -264,6 +264,8 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
 		log_err("can't create socket: %s", sock_strerror(errno));
 		*noproto = 0;
 		return -1;
+	} else {
+		printf("[listen_dnsport.c // create_udp__sock()]: Call socket() func to create listing UDP socket: %s, %s\n", family==AF_INET?"AF_INET":"AF_INET6", socktype==SOCK_STREAM?"SOCK_STREAM":"SOCK_DGRAM");
 	}
 #ifdef HAVE_SYSTEMD
 	} else {
@@ -622,6 +624,7 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
 		}
 #  endif /* IPv4 MTU */
 	}
+
 	if(
 #ifdef HAVE_SYSTEMD
 		!got_fd_from_systemd &&
@@ -643,7 +646,7 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
 			) {
 			log_err_addr("can't bind socket", strerror(errno),
 				(struct sockaddr_storage*)addr, addrlen);
-		}
+		} 
 #endif /* EADDRINUSE */
 #else /* USE_WINSOCK */
 		if(WSAGetLastError() != WSAEADDRINUSE &&
@@ -656,6 +659,8 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
 #endif /* USE_WINSOCK */
 		sock_close(s);
 		return -1;
+	} else {
+		printf("[listen_dnsport.c // create_udp_sock()]: Bind udp socket to IP: %s, Port: %d\n", inet_ntoa(((struct sockaddr_in*)addr)->sin_addr), ((struct sockaddr_in*)addr)->sin_port);
 	}
 	if(!fd_set_nonblock(s)) {
 		*noproto = 0;
@@ -699,6 +704,7 @@ create_tcp_accept_sock(struct addrinfo *addr, int v6only, int* noproto,
 #else
 	(void)use_systemd;
 #endif
+	printf("[listen_dnsport.c // create_tcp_accept_sock()]: Call socket() func to create listening TCP socket: %s, %s\n", addr->ai_family==AF_INET?"AF_INET":"AF_INET6", addr->ai_socktype==SOCK_STREAM?"SOCK_STREAM":"SOCK_DGRAM");
 	if((s = socket(addr->ai_family, addr->ai_socktype, 0)) == -1) {
 #ifndef USE_WINSOCK
 		if(errno == EAFNOSUPPORT || errno == EPROTONOSUPPORT) {
@@ -832,7 +838,7 @@ create_tcp_accept_sock(struct addrinfo *addr, int v6only, int* noproto,
 	err = set_ip_dscp(s, addr->ai_family, dscp);
 	if(err != NULL)
 		log_warn("error setting IP DiffServ codepoint %d on TCP socket: %s", dscp, err);
-	if(
+	if( 
 #ifdef HAVE_SYSTEMD
 		!got_fd_from_systemd &&
 #endif
@@ -854,6 +860,8 @@ create_tcp_accept_sock(struct addrinfo *addr, int v6only, int* noproto,
 #endif
 		sock_close(s);
 		return -1;
+	} else {
+		printf("[listen_dnsport.c // create_tcp_accept_sock()]: Bind tcp socket to IP: %s, Port: %d\n", inet_ntoa(((struct sockaddr_in*)(addr->ai_addr))->sin_addr), ntohs(((struct sockaddr_in*)(addr->ai_addr))->sin_port));
 	}
 	if(!fd_set_nonblock(s)) {
 		sock_close(s);
@@ -1010,6 +1018,7 @@ make_sock(int stype, const char* ifname, const char* port,
 	int r, s, inuse, noproto;
 	hints->ai_socktype = stype;
 	*noip6 = 0;
+	printf("[listen_dnsport.c // make_sock()]: Call getaddrinfo() for IP: %s, Port: %s to get structure to create socket\n", ifname, port);
 	if((r=getaddrinfo(ifname, port, hints, &res)) != 0 || !res) {
 #ifdef USE_WINSOCK
 		if(r == EAI_NONAME && hints->ai_family == AF_INET6){
@@ -1029,6 +1038,7 @@ make_sock(int stype, const char* ifname, const char* port,
 	}
 	if(stype == SOCK_DGRAM) {
 		verbose_print_addr(res);
+		printf("[listen_dnsport.c // make_sock() // udp]: Call create_udp_sock with parameters from the returned structure of getaddrinfo() call\n");
 		s = create_udp_sock(res->ai_family, res->ai_socktype,
 			(struct sockaddr*)res->ai_addr, res->ai_addrlen,
 			v6only, &inuse, &noproto, (int)rcv, (int)snd, 1,
@@ -1039,6 +1049,7 @@ make_sock(int stype, const char* ifname, const char* port,
 			*noip6 = 1;
 		}
 	} else	{
+		printf("[listen_dnsport.c // make_sock() // tcp]: Call create_tcp_accept_sock with parameters from the returned structure of getaddrinfo() call (res)\n");
 		s = create_tcp_accept_sock(res, v6only, &noproto, reuseport,
 			transparent, tcp_mss, nodelay, freebind, use_systemd,
 			dscp);
@@ -1085,6 +1096,9 @@ make_sock_port(int stype, const char* ifname, const char* port,
 			snd, reuseport, transparent, tcp_mss, nodelay, freebind,
 			use_systemd, dscp, ub_sock);
 	}
+
+	printf("[listen_dnsport.c // make_sock_port()]: Call make_sock() for IP: %s, Port: %d\n", ifname, atoi(port));
+
 	return make_sock(stype, ifname, port, hints, v6only, noip6, rcv, snd,
 		reuseport, transparent, tcp_mss, nodelay, freebind, use_systemd,
 		dscp, ub_sock);
@@ -1297,6 +1311,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 		if (sock_queue_timeout && !set_recvtimestamp(s)) {
 			log_warn("socket timestamping is not available");
 		}
+		printf("[unbound.c // ports_create_if]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
 		if(!port_insert(list, s, is_dnscrypt
 			?listen_type_udpancil_dnscrypt:listen_type_udpancil,
 			is_pp2, ub_sock)) {
@@ -1321,11 +1336,13 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 				log_warn("IPv6 protocol not available");
 				return 1;
 			}
+			printf("port_create_if call make_sock_port udp");
 			return 0;
 		}
 		if (sock_queue_timeout && !set_recvtimestamp(s)) {
 			log_warn("socket timestamping is not available");
 		}
+		printf("[unbound.c // ports_create_if // udp]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
 		if(!port_insert(list, s, is_dnscrypt
 			?listen_type_udp_dnscrypt :
 			(sock_queue_timeout ?
@@ -1367,6 +1384,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 		}
 		if(is_ssl)
 			verbose(VERB_ALGO, "setup TCP for SSL service");
+		printf("[unbound.c // ports_create_if // tcp]: Insert listing port to list: IP: %s, Port: %d\n", ifname, atoi(port));
 		if(!port_insert(list, s, port_type, is_pp2, ub_sock)) {
 			sock_close(s);
 			if(ub_sock->addr)
@@ -1808,6 +1826,9 @@ listening_ports_open(struct config_file* cfg, char** ifs, int num_ifs,
 	if(!do_ip4 && !do_ip6) {
 		return NULL;
 	}
+
+	printf("########## Register Sockets at OS ##########\n");
+
 	/* create ip4 and ip6 ports so that return addresses are nice. */
 	if(do_auto || num_ifs == 0) {
 		if(do_auto && cfg->if_automatic_ports &&
@@ -1836,6 +1857,7 @@ listening_ports_open(struct config_file* cfg, char** ifs, int num_ifs,
 				snprintf(portbuf, sizeof(portbuf), "%d", extraport);
 				if(do_ip6) {
 					hints.ai_family = AF_INET6;
+					printf("listen_ports_open call function to create ipv6 socket\n");
 					if(!ports_create_if("::0",
 						do_auto, cfg->do_udp, do_tcp,
 						&hints, portbuf, &list,
@@ -1852,6 +1874,7 @@ listening_ports_open(struct config_file* cfg, char** ifs, int num_ifs,
 					}
 				}
 				if(do_ip4) {
+					printf("listen_ports_open call function to create ipv4 socket\n");
 					hints.ai_family = AF_INET;
 					if(!ports_create_if("0.0.0.0",
 						do_auto, cfg->do_udp, do_tcp,
@@ -1889,6 +1912,7 @@ listening_ports_open(struct config_file* cfg, char** ifs, int num_ifs,
 		}
 		if(do_ip4) {
 			hints.ai_family = AF_INET;
+			printf("[unbound.c // listening_ports_open() // ipv4]: Create ipv4 socket (call ports_create_if)\n");
 			if(!ports_create_if(do_auto?"0.0.0.0":"127.0.0.1",
 				do_auto, cfg->do_udp, do_tcp,
 				&hints, portbuf, &list,
@@ -1924,6 +1948,7 @@ listening_ports_open(struct config_file* cfg, char** ifs, int num_ifs,
 			if(!do_ip4)
 				continue;
 			hints.ai_family = AF_INET;
+			printf("[unbound.c // listening_ports_open() // ipv4]: Create ipv4 socket (call ports_create_if)\n\n");
 			if(!ports_create_if(ifs[i], 0, cfg->do_udp,
 				do_tcp, &hints, portbuf, &list,
 				cfg->so_rcvbuf, cfg->so_sndbuf,

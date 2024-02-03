@@ -308,6 +308,8 @@ apply_settings(struct daemon* daemon, struct config_file* cfg,
 		free(cfg->logfile);
 		cfg->logfile = NULL;
 	}
+
+    printf("[unbound.c // apply_settings()]: Daemon apply cfg (call daemon_apply_cfg func)\n\n");
 	daemon_apply_cfg(daemon, cfg);
 	checkrlimits(cfg);
 
@@ -699,6 +701,8 @@ run_daemon(const char* cfgfile, int cmdline_verbose, int debug_mode, int need_pi
 	struct daemon* daemon = NULL;
 	int done_setup = 0;
 
+	printf("######## Init Daemon ########\n");
+	printf("[unbound.c // run_daemon()]: Call daemon_init()\n\n");
 	if(!(daemon = daemon_init()))
 		fatal_exit("alloc failure");
 	while(!daemon->need_to_exit) {
@@ -709,6 +713,10 @@ run_daemon(const char* cfgfile, int cmdline_verbose, int debug_mode, int need_pi
 		/* config stuff */
 		if(!(cfg = config_create()))
 			fatal_exit("Could not alloc config defaults");
+		else {
+			printf("######## Create Configuration ########\n");
+			printf("[unbound.c // run_daemon()]: Create default config (Call config_create() func)\n");
+		}
 		if(!config_read(cfg, cfgfile, daemon->chroot)) {
 			if(errno != ENOENT)
 				fatal_exit("Could not read config file: %s."
@@ -722,6 +730,8 @@ run_daemon(const char* cfgfile, int cmdline_verbose, int debug_mode, int need_pi
 			config_lookup_uid(cfg);
 	
 		/* prepare */
+		printf("########## OPEN LISTENING PORTS/SOCKETS ##########\n");
+		printf("[unbound.c // run_daemon()]: Call daemon_open_ports\n");
 		if(!daemon_open_shared_ports(daemon))
 			fatal_exit("could not open ports");
 		if(!done_setup) { 
@@ -769,6 +779,7 @@ extern char* optarg;
 int 
 main(int argc, char* argv[])
 {
+	printf("######## Start of main() ########\n");
 	int c;
 	const char* cfgfile = CONFIGFILE;
 	const char* winopt = NULL;
@@ -835,6 +846,7 @@ main(int argc, char* argv[])
 		return 1;
 	}
 
+	printf("[unbound.c // main()]: Call run_daemon with commandline args + file path to config file\n\n");
 	run_daemon(cfgfile, cmdline_verbose, debug_mode, need_pidfile);
 	log_init(NULL, 0, NULL); /* close logfile */
 #ifndef unbound_testbound

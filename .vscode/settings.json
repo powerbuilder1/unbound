@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "acl_list.h": "c",
+        "config.h": "c",
+        "cstdlib": "c",
+        "cmath": "c",
+        "new": "c",
+        "*.tcc": "c",
+        "type_traits": "c",
+        "typeinfo": "c"
+    }
+}
