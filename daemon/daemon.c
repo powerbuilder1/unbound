@@ -390,6 +390,7 @@ daemon_open_shared_ports(struct daemon* daemon)
 			config_del_strarray(resif, num_resif);
 			return 0;
 		}
+		printf("[daemon.c // daemon_open_shared_ports()]: Add listen_port list (after open ports + insert) to first element of array in daeomn->port\n");
 		daemon->ports[0] = p0;
 		if(!setup_acl_for_ports(daemon->acl_interface,
 		    daemon->ports[0])) {
@@ -544,6 +545,8 @@ daemon_create_workers(struct daemon* daemon)
 			(int)daemon->num_ports);
 		daemon->num = (int)daemon->num_ports;
 	}
+	printf("[daemon.c // daemon_create_workers()]: Create Array of pointers (type worker)\n");
+	// workers hold pointer to the first element of the array (the first worker pointer)
 	daemon->workers = (struct worker**)calloc((size_t)daemon->num, 
 		sizeof(struct worker*));
 	if(!daemon->workers)
@@ -613,6 +616,7 @@ static void close_other_pipes(struct daemon* daemon, int thr)
 static void* 
 thread_start(void* arg)
 {
+	printf("[daemon.c // thread_start()]: Thread start\n");
 	struct worker* worker = (struct worker*)arg;
 	int port_num = 0;
 	log_thread_set(&worker->thread_num);
@@ -628,6 +632,7 @@ thread_start(void* arg)
 	else
 		port_num = 0;
 #endif
+	printf("\nNot shared\n");
 	if(!worker_init(worker, worker->daemon->cfg,
 			worker->daemon->ports[port_num], 0))
 		fatal_exit("Could not initialize thread");
@@ -647,7 +652,12 @@ daemon_start_others(struct daemon* daemon)
 	log_assert(daemon);
 	verbose(VERB_ALGO, "start threads");
 	/* skip i=0, is this thread */
+	printf("[daemon.c // daemon_start_others()]: Create thread for n (daemon->num) worker -> loop call ub_thread_create()\n");
+	if (daemon->num == 1) {
+		printf("[daemon.c // daemon_start_others] Only one thread -> only main thread \n");
+	}
 	for(i=1; i<daemon->num; i++) {
+	 	printf("---------------------------------------------------\n");
 		ub_thread_create(&daemon->workers[i]->thr_id,
 			thread_start, daemon->workers[i]);
 #ifdef THREADS_DISABLED
@@ -759,6 +769,8 @@ daemon_fork(struct daemon* daemon)
 	/* first create all the worker structures, so we can pass
 	 * them to the newly created threads. 
 	 */
+	printf("\n########### Create threads and init the workers ###########\n");
+	printf("[daemon.c // daemon_fork()]: Create workers (pointer Array)\n");
 	daemon_create_workers(daemon);
 
 #if defined(HAVE_EV_LOOP) || defined(HAVE_EV_DEFAULT_LOOP)
@@ -770,6 +782,7 @@ daemon_fork(struct daemon* daemon)
 	/* Now create the threads and init the workers.
 	 * By the way, this is thread #0 (the main thread).
 	 */
+	printf("[daemon.c // daemon_fork()]: Main thread start other threads\n");
 	daemon_start_others(daemon);
 
 	/* Special handling for the main thread. This is the thread
@@ -777,6 +790,8 @@ daemon_fork(struct daemon* daemon)
 	 */
 #if !(defined(HAVE_EV_LOOP) || defined(HAVE_EV_DEFAULT_LOOP))
 	/* libevent has the last inited base get signals (or any base) */
+	printf("Shared");
+	// take ports[0] -> listen_port list with opend sockets 
 	if(!worker_init(daemon->workers[0], daemon->cfg, daemon->ports[0], 1))
 		fatal_exit("Could not initialize main thread");
 #endif

@@ -265,7 +265,7 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
 		*noproto = 0;
 		return -1;
 	} else {
-		printf("[listen_dnsport.c // create_udp__sock()]: Call socket() func to create listing UDP socket: %s, %s\n", family==AF_INET?"AF_INET":"AF_INET6", socktype==SOCK_STREAM?"SOCK_STREAM":"SOCK_DGRAM");
+		printf("[listen_dnsport.c // create_udp_sock()]: Call socket() func to create listing UDP socket: %s, %s\n", family==AF_INET?"AF_INET":"AF_INET6", socktype==SOCK_STREAM?"SOCK_STREAM":"SOCK_DGRAM");
 	}
 #ifdef HAVE_SYSTEMD
 	} else {
@@ -646,7 +646,7 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
 			) {
 			log_err_addr("can't bind socket", strerror(errno),
 				(struct sockaddr_storage*)addr, addrlen);
-		} 
+		}
 #endif /* EADDRINUSE */
 #else /* USE_WINSOCK */
 		if(WSAGetLastError() != WSAEADDRINUSE &&
@@ -660,7 +660,7 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
 		sock_close(s);
 		return -1;
 	} else {
-		printf("[listen_dnsport.c // create_udp_sock()]: Bind udp socket to IP: %s, Port: %d\n", inet_ntoa(((struct sockaddr_in*)addr)->sin_addr), ((struct sockaddr_in*)addr)->sin_port);
+		printf("[listen_dnsport.c // create_udp_sock()]: Bind udp socket to IP: %s, Port: %d\n", inet_ntoa(((struct sockaddr_in*)addr)->sin_addr), ntohs(((struct sockaddr_in*)addr)->sin_port));
 	}
 	if(!fd_set_nonblock(s)) {
 		*noproto = 0;
@@ -838,7 +838,7 @@ create_tcp_accept_sock(struct addrinfo *addr, int v6only, int* noproto,
 	err = set_ip_dscp(s, addr->ai_family, dscp);
 	if(err != NULL)
 		log_warn("error setting IP DiffServ codepoint %d on TCP socket: %s", dscp, err);
-	if( 
+	if(
 #ifdef HAVE_SYSTEMD
 		!got_fd_from_systemd &&
 #endif
@@ -1264,12 +1264,17 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 	int http2_nodelay, int use_systemd, int dnscrypt_port, int dscp,
 	int sock_queue_timeout)
 {
-	int s, noip6=0;
+	int s, s_coap, noip6=0;
 	int is_https = if_is_https(ifname, port, https_port);
 	int is_dnscrypt = if_is_dnscrypt(ifname, port, dnscrypt_port);
 	int is_pp2 = if_is_pp2(ifname, port, proxy_protocol_port);
 	int nodelay = is_https && http2_nodelay;
 	struct unbound_socket* ub_sock;
+
+    struct unbound_socket* ub_sock_coap;
+	char coap_portbuf[32];
+    int coap_port = 5683;
+	snprintf(coap_portbuf, sizeof(coap_portbuf), "%d", coap_port);
 
 	if(!do_udp && !do_tcp)
 		return 0;
@@ -1311,7 +1316,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 		if (sock_queue_timeout && !set_recvtimestamp(s)) {
 			log_warn("socket timestamping is not available");
 		}
-		printf("[unbound.c // ports_create_if]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
+		printf("[listen_dnsport.c // ports_create_if]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
 		if(!port_insert(list, s, is_dnscrypt
 			?listen_type_udpancil_dnscrypt:listen_type_udpancil,
 			is_pp2, ub_sock)) {
@@ -1323,8 +1328,15 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 		}
 	} else if(do_udp) {
 		ub_sock = calloc(1, sizeof(struct unbound_socket));
+
+        ub_sock_coap = calloc(1, sizeof(struct unbound_socket));
+
 		if(!ub_sock)
 			return 0;
+
+		if(!ub_sock_coap)
+			return 0;
+
 		/* regular udp socket */
 		if((s = make_sock_port(SOCK_DGRAM, ifname, port, hints, 1,
 			&noip6, rcv, snd, reuseport, transparent,
@@ -1339,10 +1351,25 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 			printf("port_create_if call make_sock_port udp");
 			return 0;
 		}
+
+		/* regular udp socket (for coap) */
+		if((s_coap = make_sock_port(SOCK_DGRAM, ifname, coap_portbuf, hints, 1,
+			&noip6, rcv, snd, reuseport, transparent,
+			tcp_mss, nodelay, freebind, use_systemd, dscp, ub_sock_coap)) == -1) {
+			if(ub_sock_coap->addr)
+				freeaddrinfo(ub_sock_coap->addr);
+			free(ub_sock_coap);
+			if(noip6) {
+				log_warn("IPv6 protocol not available");
+				return 1;
+			}
+			printf("port_create_if call make_sock_port udp");
+			return 0;
+		}
 		if (sock_queue_timeout && !set_recvtimestamp(s)) {
 			log_warn("socket timestamping is not available");
 		}
-		printf("[unbound.c // ports_create_if // udp]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
+		printf("[listen_dnsport.c // ports_create_if // udp]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
 		if(!port_insert(list, s, is_dnscrypt
 			?listen_type_udp_dnscrypt :
 			(sock_queue_timeout ?
@@ -1352,6 +1379,15 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 			if(ub_sock->addr)
 				freeaddrinfo(ub_sock->addr);
 			free(ub_sock);
+			return 0;
+		}
+
+		if(!port_insert(list, s_coap, listen_type_coap,
+			is_pp2, ub_sock_coap)) {
+			sock_close(s);
+			if(ub_sock_coap->addr)
+				freeaddrinfo(ub_sock_coap->addr);
+			free(ub_sock_coap);
 			return 0;
 		}
 	}
@@ -1384,7 +1420,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 		}
 		if(is_ssl)
 			verbose(VERB_ALGO, "setup TCP for SSL service");
-		printf("[unbound.c // ports_create_if // tcp]: Insert listing port to list: IP: %s, Port: %d\n", ifname, atoi(port));
+		printf("[listen_dnsport.c // ports_create_if // tcp]: Insert listing port to list: IP: %s, Port: %d, Port_type: %s\n", ifname, atoi(port), port_type==listen_type_ssl?"SSL":port_type==listen_type_http?"HTTP":port_type==listen_type_tcp_dnscrypt?"TCP-DNSCRYPT":"TCP");
 		if(!port_insert(list, s, port_type, is_pp2, ub_sock)) {
 			sock_close(s);
 			if(ub_sock->addr)
@@ -1469,16 +1505,24 @@ listen_create(struct comm_base* base, struct listen_port* ports,
 		return NULL;
 	}
 
+	printf("[listen_dnsport.c // listen_create()]: Create comm point (one) for every listing Portnumber\n");
 	/* create comm points as needed */
 	while(ports) {
 		struct comm_point* cp = NULL;
 		if(ports->ftype == listen_type_udp ||
 		   ports->ftype == listen_type_udp_dnscrypt) {
+		 	printf("[listen_dnsport.c // listen_create() // udp]: Create comm point for UDP\n");
 			cp = comm_point_create_udp(base, ports->fd,
 				front->udp_buff, ports->pp2_enabled, cb,
-				cb_arg, ports->socket);
+				cb_arg, ports->socket, ports->ftype);
+		} else if(ports->ftype == listen_type_coap) {
+		 	printf("[listen_dnsport.c // listen_create() // udp]: Create comm point for UDP\n");
+			cp = comm_point_create_udp(base, ports->fd,
+				front->udp_buff, ports->pp2_enabled, cb,
+				cb_arg, ports->socket, ports->ftype);
 		} else if(ports->ftype == listen_type_tcp ||
 				ports->ftype == listen_type_tcp_dnscrypt) {
+			printf("[listen_dnsport.c // listen_create() // tcp]: Create comm point for TCP\n");
 			cp = comm_point_create_tcp(base, ports->fd,
 				tcp_accept_count, tcp_idle_timeout,
 				harden_large_queries, 0, NULL,
@@ -1487,6 +1531,7 @@ listen_create(struct comm_base* base, struct listen_port* ports,
 				ports->socket);
 		} else if(ports->ftype == listen_type_ssl ||
 			ports->ftype == listen_type_http) {
+			printf("[listen_dnsport.c // listen_create() // ssl]: Create comm point for SSL\n");
 			cp = comm_point_create_tcp(base, ports->fd,
 				tcp_accept_count, tcp_idle_timeout,
 				harden_large_queries,
@@ -1831,6 +1876,7 @@ listening_ports_open(struct config_file* cfg, char** ifs, int num_ifs,
 
 	/* create ip4 and ip6 ports so that return addresses are nice. */
 	if(do_auto || num_ifs == 0) {
+		printf("Auto or no interface specified\n");
 		if(do_auto && cfg->if_automatic_ports &&
 			cfg->if_automatic_ports[0]!=0) {
 			char* now = cfg->if_automatic_ports;
@@ -1912,7 +1958,7 @@ listening_ports_open(struct config_file* cfg, char** ifs, int num_ifs,
 		}
 		if(do_ip4) {
 			hints.ai_family = AF_INET;
-			printf("[unbound.c // listening_ports_open() // ipv4]: Create ipv4 socket (call ports_create_if)\n");
+			// printf("[unbound.c // listening_ports_open() // ipv4]: Create ipv4 socket (call ports_create_if)\n");
 			if(!ports_create_if(do_auto?"0.0.0.0":"127.0.0.1",
 				do_auto, cfg->do_udp, do_tcp,
 				&hints, portbuf, &list,
@@ -1932,6 +1978,7 @@ listening_ports_open(struct config_file* cfg, char** ifs, int num_ifs,
 			if(!do_ip6)
 				continue;
 			hints.ai_family = AF_INET6;
+			printf("[unbound.c // listening_ports_open() // ipv6]: Create ipv6 socket (call ports_create_if)\n\n");
 			if(!ports_create_if(ifs[i], 0, cfg->do_udp,
 				do_tcp, &hints, portbuf, &list,
 				cfg->so_rcvbuf, cfg->so_sndbuf,

@@ -1365,6 +1365,7 @@ int
 worker_handle_request(struct comm_point* c, void* arg, int error,
 	struct comm_reply* repinfo)
 {
+	printf("[worker.c // worker_handle_request()] Handle incoming requests\n");
 	struct worker* worker = (struct worker*)arg;
 	int ret;
 	hashvalue_type h;
@@ -1528,6 +1529,8 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 		LDNS_RCODE_SET(sldns_buffer_begin(c->buffer),
 			LDNS_RCODE_FORMERR);
 		goto send_reply;
+	} else {
+		printf("[worker.c // worker_handle_request()] Parse request (Byte Stream) to query_info\n");
 	}
 	if(worker->env.cfg->log_queries) {
 		char ip[128];
@@ -2101,6 +2104,7 @@ int
 worker_init(struct worker* worker, struct config_file *cfg,
 	struct listen_port* ports, int do_sigs)
 {
+printf("\n[worker.c // worker_init()] Init worker\n");
 #ifdef USE_DNSTAP
 	struct dt_env* dtenv = &worker->dtenv;
 #else
@@ -2110,6 +2114,7 @@ worker_init(struct worker* worker, struct config_file *cfg,
 	worker->thread_tid = gettid();
 #endif
 	worker->need_to_exit = 0;
+	printf("[worker.c // worker_init()] Create event handling base\n");
 	worker->base = comm_base_create(do_sigs);
 	if(!worker->base) {
 		log_err("could not create event handling base");
@@ -2169,6 +2174,9 @@ worker_init(struct worker* worker, struct config_file *cfg,
 			fatal_exit("dt_init failed");
 	}
 #endif
+	printf("[worker.c // worker_init()] Create commpoints with for this thread for the shared ports. \n");
+	printf("[worker.c // worker_init()] pass callback function for compoints (which will handle the requests -> coming from the event callback functions) \n");
+
 	worker->front = listen_create(worker->base, ports,
 		cfg->msg_buffer_size, (int)cfg->incoming_num_tcp,
 		cfg->do_tcp_keepalive
@@ -2183,6 +2191,7 @@ worker_init(struct worker* worker, struct config_file *cfg,
 		worker_delete(worker);
 		return 0;
 	}
+	printf("\n############## Create outgoing sockets ####################\n");
 	worker->back = outside_network_create(worker->base,
 		cfg->msg_buffer_size, (size_t)cfg->outgoing_num_ports,
 		cfg->out_ifs, cfg->num_out_ifs, cfg->do_ip4, cfg->do_ip6,

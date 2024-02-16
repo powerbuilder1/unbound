@@ -50,6 +50,7 @@
 #include "sldns/pkthdr.h"
 #include "sldns/sbuffer.h"
 #include "sldns/str2wire.h"
+#include "sldns/wire2str.h"
 #include "dnstap/dnstap.h"
 #include "dnscrypt/dnscrypt.h"
 #include "services/listen_dnsport.h"
@@ -206,6 +207,7 @@ comm_base_create(int sigs)
 		free(b);
 		return NULL;
 	}
+	printf("[netevent.c // comm_base_create] Create default event base\n");
 	b->eb->base = ub_default_event_base(sigs, &b->eb->secs, &b->eb->now);
 	if(!b->eb->base) {
 		free(b->eb);
@@ -1089,6 +1091,7 @@ comm_point_udp_ancil_callback(int fd, short event, void* arg)
 void
 comm_point_udp_callback(int fd, short event, void* arg)
 {
+	printf("[netevent.c // comm_point_udp_callback()] Called callback function for udp requests\n");
 	struct comm_reply rep;
 	ssize_t rcv;
 	int i;
@@ -1106,6 +1109,108 @@ comm_point_udp_callback(int fd, short event, void* arg)
 		rep.remote_addrlen = (socklen_t)sizeof(rep.remote_addr);
 		log_assert(fd != -1);
 		log_assert(sldns_buffer_remaining(rep.c->buffer) > 0);
+
+		/*
+			- receive data from buffer
+			- write to rep.c->buffer (buffer of the com_reply sturcture)
+			- give pointer to rep.remote_addr (address of the client) -> added by the recvfrom function
+			- give pointer to rep.remote_addrlen (length of the address) -> added by the recvfrom function
+		*/
+	 	printf("[netevent.c // comm_point_udp_callback()] Receiving data from listening socket and write to buffer\n");
+		rcv = recvfrom(fd, (void*)sldns_buffer_begin(rep.c->buffer),
+			sldns_buffer_remaining(rep.c->buffer), MSG_DONTWAIT,
+			(struct sockaddr*)&rep.remote_addr, &rep.remote_addrlen);
+		if(rcv == -1) {
+#ifndef USE_WINSOCK
+			if(errno != EAGAIN && errno != EINTR
+				&& udp_recv_needs_log(errno))
+				log_err("recvfrom %d failed: %s",
+					fd, strerror(errno));
+#else
+			if(WSAGetLastError() != WSAEINPROGRESS &&
+				WSAGetLastError() != WSAECONNRESET &&
+				WSAGetLastError()!= WSAEWOULDBLOCK &&
+				udp_recv_needs_log(WSAGetLastError()))
+				log_err("recvfrom failed: %s",
+					wsa_strerror(WSAGetLastError()));
+#endif
+			return;
+		}
+		sldns_buffer_skip(rep.c->buffer, rcv);
+		sldns_buffer_flip(rep.c->buffer);
+
+		/* Convert the received data to ASCII representation */
+		char* str = sldns_wire2str_pkt(sldns_buffer_begin(rep.c->buffer), rcv);
+
+		/* Print the ASCII representation */
+		printf("%s\n", str);
+
+		/* Clean up */
+		free(str);
+
+
+		rep.srctype = 0;
+		rep.is_proxied = 0;
+
+		if(rep.c->pp2_enabled && !consume_pp2_header(rep.c->buffer,
+			&rep, 0)) {
+			log_err("proxy_protocol: could not consume PROXYv2 header");
+			return;
+		}
+		if(!rep.is_proxied) {
+			rep.client_addrlen = rep.remote_addrlen;
+			memmove(&rep.client_addr, &rep.remote_addr,
+				rep.remote_addrlen);
+		}
+
+		printf("[netevent.c // comm_point_udp_callback()] Calling callback of the comm_point\n");
+		fptr_ok(fptr_whitelist_comm_point(rep.c->callback));
+		if((*rep.c->callback)(rep.c, rep.c->cb_arg, NETEVENT_NOERROR, &rep)) {
+			/* send back immediate reply */
+#ifdef USE_DNSCRYPT
+			buffer = rep.c->dnscrypt_buffer;
+#else
+			buffer = rep.c->buffer;
+#endif
+			(void)comm_point_send_udp_msg(rep.c, buffer,
+				(struct sockaddr*)&rep.remote_addr,
+				rep.remote_addrlen, 0);
+		}
+		if(!rep.c || rep.c->fd != fd) /* commpoint closed to -1 or reused for
+		another UDP port. Note rep.c cannot be reused with TCP fd. */
+			break;
+	}
+}
+
+void
+comm_point_oscore_callback(int fd, short event, void* arg)
+{
+	printf("[netevent.c // comm_point_udp_callback()] Called callback function for udp requests\n");
+	struct comm_reply rep;
+	ssize_t rcv;
+	int i;
+	struct sldns_buffer *buffer;
+
+	rep.c = (struct comm_point*)arg;
+	log_assert(rep.c->type == comm_udp);
+
+	if(!(event&UB_EV_READ))
+		return;
+	log_assert(rep.c && rep.c->buffer && rep.c->fd == fd);
+	ub_comm_base_now(rep.c->ev->base);
+	for(i=0; i<NUM_UDP_PER_SELECT; i++) {
+		sldns_buffer_clear(rep.c->buffer);
+		rep.remote_addrlen = (socklen_t)sizeof(rep.remote_addr);
+		log_assert(fd != -1);
+		log_assert(sldns_buffer_remaining(rep.c->buffer) > 0);
+
+		/*
+			- receive data from buffer
+			- write to rep.c->buffer (buffer of the com_reply sturcture)
+			- give pointer to rep.remote_addr (address of the client) -> added by the recvfrom function
+			- give pointer to rep.remote_addrlen (length of the address) -> added by the recvfrom function
+		*/
+	 	printf("[netevent.c // comm_point_udp_callback()] Receiving data from listening socket and write to buffer\n");
 		rcv = recvfrom(fd, (void*)sldns_buffer_begin(rep.c->buffer),
 			sldns_buffer_remaining(rep.c->buffer), MSG_DONTWAIT,
 			(struct sockaddr*)&rep.remote_addr, &rep.remote_addrlen);
@@ -1141,6 +1246,7 @@ comm_point_udp_callback(int fd, short event, void* arg)
 				rep.remote_addrlen);
 		}
 
+		printf("[netevent.c // comm_point_udp_callback()] Calling callback of the comm_point\n");
 		fptr_ok(fptr_whitelist_comm_point(rep.c->callback));
 		if((*rep.c->callback)(rep.c, rep.c->cb_arg, NETEVENT_NOERROR, &rep)) {
 			/* send back immediate reply */
@@ -1216,8 +1322,7 @@ void comm_base_handle_slow_accept(int ATTR_UNUSED(fd),
 	}
 }
 
-int comm_point_perform_accept(struct comm_point* c,
-	struct sockaddr_storage* addr, socklen_t* addrlen)
+int comm_point_perform_accept(struct comm_point* c, struct sockaddr_storage* addr, socklen_t* addrlen)
 {
 	int new_fd;
 	*addrlen = (socklen_t)sizeof(*addr);
@@ -3942,7 +4047,7 @@ void comm_point_raw_handle_callback(int ATTR_UNUSED(fd),
 struct comm_point*
 comm_point_create_udp(struct comm_base *base, int fd, sldns_buffer* buffer,
 	int pp2_enabled, comm_point_callback_type* callback,
-	void* callback_arg, struct unbound_socket* socket)
+	void* callback_arg, struct unbound_socket* socket, enum listen_type port_type)
 {
 	struct comm_point* c = (struct comm_point*)calloc(1,
 		sizeof(struct comm_point));
@@ -3986,8 +4091,18 @@ comm_point_create_udp(struct comm_base *base, int fd, sldns_buffer* buffer,
 	c->pp2_header_state = pp2_header_none;
 	evbits = UB_EV_READ | UB_EV_PERSIST;
 	/* ub_event stuff */
-	c->ev->ev = ub_event_new(base->eb->base, c->fd, evbits,
-		comm_point_udp_callback, c);
+	// printf("[netevent.c // comm_point_create_udp] Create Event for UDP Com Point\n");
+
+    if (port_type == listen_type_coap) {
+	    printf("[netevent.c // comm_point_create_udp] Create Event for UDP/COAP Com Point\n");
+	    c->ev->ev = ub_event_new(base->eb->base, c->fd, evbits,
+		    comm_point_udp_callback, c);
+    } else {
+	    printf("[netevent.c // comm_point_create_udp] Create Event for UDP(normal) Com Point\n");
+        c->ev->ev = ub_event_new(base->eb->base, c->fd, evbits,
+            comm_point_udp_callback, c);
+    }
+
 	if(c->ev->ev == NULL) {
 		log_err("could not baseset udp event");
 		comm_point_delete(c);

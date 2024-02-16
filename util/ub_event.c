@@ -215,6 +215,7 @@ ub_default_event_base(int sigs, time_t* time_secs, struct timeval* time_tv)
 #ifdef USE_MINI_EVENT
 	(void)sigs;
 	/* use mini event time-sharing feature */
+	printf("[ub_event.c // ub_default_base()] Using mini event\n");
 	base = event_init(time_secs, time_tv);
 #else
 	(void)time_secs;
@@ -296,6 +297,7 @@ ub_event_new(struct ub_event_base* base, int fd, short bits,
 		return NULL;
 
 #ifndef HAVE_EVENT_ASSIGN
+	// printf("[ub_event.c // ub_event_new()] Set content of event (also callback func.)\n");
 	event_set(ev, fd, NATIVE_BITS(bits), NATIVE_BITS_CB(cb), arg);
 	if (event_base_set(AS_EVENT_BASE(base), ev) != 0) {
 		free(ev);

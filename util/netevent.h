@@ -530,7 +530,7 @@ struct ub_event_base* comm_base_internal(struct comm_base* b);
  */
 struct comm_point* comm_point_create_udp(struct comm_base* base,
 	int fd, struct sldns_buffer* buffer, int pp2_enabled,
-	comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket);
+	comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket, enum listen_type);
 
 /**
  * Create an UDP with ancillary data comm point. Calls malloc.
@@ -808,6 +808,8 @@ int comm_point_perform_accept(struct comm_point* c,
  * @param arg: the comm_point structure.
  */
 void comm_point_udp_callback(int fd, short event, void* arg);
+
+void comm_point_oscore_callback(int fd, short event, void* arg);
 
 /**
  * This routine is published for checks and tests, and is only used internally.

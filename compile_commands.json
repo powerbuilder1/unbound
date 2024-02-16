@@ -1,0 +1,3530 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/dns.o",
+      "services/cache/dns.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/cache/dns.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/dns.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "dns.o",
+      "services/cache/dns.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/cache/dns.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/dns.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/infra.o",
+      "services/cache/infra.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/cache/infra.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/infra.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "infra.o",
+      "services/cache/infra.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/cache/infra.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/infra.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/rrset.o",
+      "services/cache/rrset.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/cache/rrset.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/rrset.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "rrset.o",
+      "services/cache/rrset.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/cache/rrset.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/rrset.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/dname.o",
+      "util/data/dname.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/data/dname.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/dname.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "dname.o",
+      "util/data/dname.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/data/dname.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/dname.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/msgencode.o",
+      "util/data/msgencode.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/data/msgencode.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/msgencode.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "msgencode.o",
+      "util/data/msgencode.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/data/msgencode.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/msgencode.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/as112.o",
+      "util/as112.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/as112.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/as112.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "as112.o",
+      "util/as112.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/as112.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/as112.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/msgparse.o",
+      "util/data/msgparse.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/data/msgparse.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/msgparse.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "msgparse.o",
+      "util/data/msgparse.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/data/msgparse.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/msgparse.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/msgreply.o",
+      "util/data/msgreply.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/data/msgreply.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/msgreply.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "msgreply.o",
+      "util/data/msgreply.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/data/msgreply.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/msgreply.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/packed_rrset.o",
+      "util/data/packed_rrset.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/data/packed_rrset.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/packed_rrset.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "packed_rrset.o",
+      "util/data/packed_rrset.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/data/packed_rrset.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/packed_rrset.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/iterator.o",
+      "iterator/iterator.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iterator.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/iterator.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "iterator.o",
+      "iterator/iterator.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iterator.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/iter_delegpt.o",
+      "iterator/iter_delegpt.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_delegpt.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/iter_delegpt.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "iter_delegpt.o",
+      "iterator/iter_delegpt.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_delegpt.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iter_delegpt.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/iter_donotq.o",
+      "iterator/iter_donotq.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_donotq.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/iter_donotq.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "iter_donotq.o",
+      "iterator/iter_donotq.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_donotq.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iter_donotq.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/iter_fwd.o",
+      "iterator/iter_fwd.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_fwd.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/iter_fwd.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "iter_fwd.o",
+      "iterator/iter_fwd.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_fwd.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iter_fwd.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/iter_hints.o",
+      "iterator/iter_hints.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_hints.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/iter_hints.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "iter_hints.o",
+      "iterator/iter_hints.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_hints.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iter_hints.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/iter_priv.o",
+      "iterator/iter_priv.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_priv.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/iter_priv.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "iter_priv.o",
+      "iterator/iter_priv.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_priv.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iter_priv.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/iter_resptype.o",
+      "iterator/iter_resptype.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_resptype.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/iter_resptype.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "iter_resptype.o",
+      "iterator/iter_resptype.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_resptype.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iter_resptype.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/iter_scrub.o",
+      "iterator/iter_scrub.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_scrub.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/iter_scrub.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "iter_scrub.o",
+      "iterator/iter_scrub.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_scrub.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iter_scrub.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/iter_utils.o",
+      "iterator/iter_utils.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_utils.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/iter_utils.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "iter_utils.o",
+      "iterator/iter_utils.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iterator/iter_utils.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/iter_utils.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/localzone.o",
+      "services/localzone.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/localzone.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/localzone.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "localzone.o",
+      "services/localzone.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/localzone.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/localzone.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/mesh.o",
+      "services/mesh.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/mesh.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/mesh.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "mesh.o",
+      "services/mesh.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/mesh.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/mesh.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/modstack.o",
+      "services/modstack.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/modstack.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/modstack.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "modstack.o",
+      "services/modstack.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/modstack.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/modstack.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/view.o",
+      "services/view.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/view.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/view.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "view.o",
+      "services/view.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/view.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/view.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/outbound_list.o",
+      "services/outbound_list.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/outbound_list.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/outbound_list.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "outbound_list.o",
+      "services/outbound_list.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/outbound_list.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/outbound_list.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/alloc.o",
+      "util/alloc.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/alloc.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/alloc.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "alloc.o",
+      "util/alloc.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/alloc.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/alloc.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/config_file.o",
+      "util/config_file.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/config_file.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/config_file.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "config_file.o",
+      "util/config_file.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/config_file.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/config_file.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/configlexer.o",
+      "util/configlexer.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/configlexer.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/configlexer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "configlexer.o",
+      "util/configlexer.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/configlexer.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/configlexer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/configparser.o",
+      "util/configparser.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/configparser.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/configparser.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "configparser.o",
+      "util/configparser.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/configparser.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/configparser.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/fptr_wlist.o",
+      "util/fptr_wlist.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/fptr_wlist.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/fptr_wlist.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "fptr_wlist.o",
+      "util/fptr_wlist.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/fptr_wlist.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/fptr_wlist.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/siphash.o",
+      "util/siphash.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/siphash.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/siphash.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "siphash.o",
+      "util/siphash.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/siphash.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/siphash.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/edns.o",
+      "util/edns.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/edns.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/edns.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "edns.o",
+      "util/edns.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/edns.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/edns.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/locks.o",
+      "util/locks.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/locks.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/locks.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "locks.o",
+      "util/locks.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/locks.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/locks.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/log.o",
+      "util/log.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/log.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/log.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "log.o",
+      "util/log.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/log.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/log.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/mini_event.o",
+      "util/mini_event.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/mini_event.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/mini_event.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "mini_event.o",
+      "util/mini_event.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/mini_event.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/mini_event.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/module.o",
+      "util/module.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/module.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/module.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "module.o",
+      "util/module.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/module.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/module.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/net_help.o",
+      "util/net_help.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/net_help.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/net_help.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "net_help.o",
+      "util/net_help.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/net_help.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/net_help.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/random.o",
+      "util/random.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/random.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/random.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "random.o",
+      "util/random.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/random.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/random.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/rbtree.o",
+      "util/rbtree.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/rbtree.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/rbtree.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "rbtree.o",
+      "util/rbtree.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/rbtree.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/rbtree.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/regional.o",
+      "util/regional.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/regional.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/regional.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "regional.o",
+      "util/regional.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/regional.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/regional.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/rtt.o",
+      "util/rtt.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/rtt.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/rtt.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "rtt.o",
+      "util/rtt.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/rtt.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/rtt.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/dnstree.o",
+      "util/storage/dnstree.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/storage/dnstree.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/dnstree.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "dnstree.o",
+      "util/storage/dnstree.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/storage/dnstree.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/dnstree.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/lookup3.o",
+      "util/storage/lookup3.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/storage/lookup3.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/lookup3.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "lookup3.o",
+      "util/storage/lookup3.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/storage/lookup3.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/lookup3.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/lruhash.o",
+      "util/storage/lruhash.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/storage/lruhash.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/lruhash.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "lruhash.o",
+      "util/storage/lruhash.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/storage/lruhash.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/lruhash.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/slabhash.o",
+      "util/storage/slabhash.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/storage/slabhash.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/slabhash.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "slabhash.o",
+      "util/storage/slabhash.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/storage/slabhash.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/slabhash.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/tcp_conn_limit.o",
+      "util/tcp_conn_limit.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/tcp_conn_limit.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/tcp_conn_limit.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "tcp_conn_limit.o",
+      "util/tcp_conn_limit.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/tcp_conn_limit.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/tcp_conn_limit.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/timehist.o",
+      "util/timehist.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/timehist.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/timehist.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "timehist.o",
+      "util/timehist.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/timehist.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/timehist.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/tube.o",
+      "util/tube.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/tube.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/tube.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "tube.o",
+      "util/tube.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/tube.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/tube.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/winsock_event.o",
+      "util/winsock_event.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/winsock_event.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/winsock_event.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "winsock_event.o",
+      "util/winsock_event.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/winsock_event.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/winsock_event.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/autotrust.o",
+      "validator/autotrust.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/autotrust.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/autotrust.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "autotrust.o",
+      "validator/autotrust.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/autotrust.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/autotrust.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/val_anchor.o",
+      "validator/val_anchor.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_anchor.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/val_anchor.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "val_anchor.o",
+      "validator/val_anchor.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_anchor.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/val_anchor.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/rpz.o",
+      "services/rpz.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/rpz.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/rpz.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "rpz.o",
+      "services/rpz.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/rpz.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/rpz.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/rfc_1982.o",
+      "util/rfc_1982.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/rfc_1982.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/rfc_1982.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "rfc_1982.o",
+      "util/rfc_1982.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/rfc_1982.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/rfc_1982.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/proxy_protocol.o",
+      "util/proxy_protocol.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/proxy_protocol.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/proxy_protocol.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "proxy_protocol.o",
+      "util/proxy_protocol.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/proxy_protocol.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/proxy_protocol.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/validator.o",
+      "validator/validator.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/validator.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/validator.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "validator.o",
+      "validator/validator.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/validator.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/val_kcache.o",
+      "validator/val_kcache.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_kcache.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/val_kcache.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "val_kcache.o",
+      "validator/val_kcache.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_kcache.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/val_kcache.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/val_kentry.o",
+      "validator/val_kentry.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_kentry.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/val_kentry.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "val_kentry.o",
+      "validator/val_kentry.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_kentry.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/val_kentry.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/val_neg.o",
+      "validator/val_neg.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_neg.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/val_neg.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "val_neg.o",
+      "validator/val_neg.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_neg.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/val_neg.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/val_nsec3.o",
+      "validator/val_nsec3.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_nsec3.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/val_nsec3.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "val_nsec3.o",
+      "validator/val_nsec3.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_nsec3.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/val_nsec3.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/val_nsec.o",
+      "validator/val_nsec.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_nsec.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/val_nsec.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "val_nsec.o",
+      "validator/val_nsec.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_nsec.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/val_nsec.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/val_secalgo.o",
+      "validator/val_secalgo.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_secalgo.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/val_secalgo.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "val_secalgo.o",
+      "validator/val_secalgo.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_secalgo.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/val_secalgo.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/val_sigcrypt.o",
+      "validator/val_sigcrypt.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_sigcrypt.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/val_sigcrypt.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "val_sigcrypt.o",
+      "validator/val_sigcrypt.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_sigcrypt.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/val_sigcrypt.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/val_utils.o",
+      "validator/val_utils.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_utils.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/val_utils.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "val_utils.o",
+      "validator/val_utils.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/validator/val_utils.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/val_utils.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/dns64.o",
+      "dns64/dns64.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/dns64/dns64.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/dns64.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "dns64.o",
+      "dns64/dns64.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/dns64/dns64.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/dns64.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/authzone.o",
+      "services/authzone.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/authzone.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/authzone.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "authzone.o",
+      "services/authzone.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/authzone.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/authzone.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/respip.o",
+      "respip/respip.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/respip/respip.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/respip.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "respip.o",
+      "respip/respip.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/respip/respip.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/respip.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/timeval_func.o",
+      "util/timeval_func.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/timeval_func.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/timeval_func.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "timeval_func.o",
+      "util/timeval_func.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/timeval_func.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/timeval_func.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/netevent.o",
+      "util/netevent.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/netevent.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/netevent.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "netevent.o",
+      "util/netevent.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/netevent.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/netevent.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/listen_dnsport.o",
+      "services/listen_dnsport.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/listen_dnsport.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/listen_dnsport.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "listen_dnsport.o",
+      "services/listen_dnsport.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/listen_dnsport.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/listen_dnsport.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/outside_network.o",
+      "services/outside_network.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/outside_network.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/outside_network.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "outside_network.o",
+      "services/outside_network.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/services/outside_network.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/outside_network.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/ub_event.o",
+      "util/ub_event.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/ub_event.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/ub_event.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "ub_event.o",
+      "util/ub_event.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/ub_event.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/ub_event.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/acl_list.o",
+      "daemon/acl_list.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/acl_list.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/acl_list.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "acl_list.o",
+      "daemon/acl_list.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/acl_list.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/acl_list.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/cachedump.o",
+      "daemon/cachedump.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/cachedump.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/cachedump.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "cachedump.o",
+      "daemon/cachedump.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/cachedump.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/cachedump.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/daemon.o",
+      "daemon/daemon.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/daemon.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/daemon.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "daemon.o",
+      "daemon/daemon.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/daemon.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/shm_main.o",
+      "util/shm_side/shm_main.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/shm_side/shm_main.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/shm_main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "shm_main.o",
+      "util/shm_side/shm_main.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/shm_side/shm_main.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/shm_main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/remote.o",
+      "daemon/remote.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/remote.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/remote.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "remote.o",
+      "daemon/remote.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/remote.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/remote.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/stats.o",
+      "daemon/stats.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/stats.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/stats.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "stats.o",
+      "daemon/stats.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/stats.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/stats.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/unbound.o",
+      "daemon/unbound.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/unbound.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/unbound.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "unbound.o",
+      "daemon/unbound.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/unbound.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/unbound.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/worker.o",
+      "daemon/worker.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/worker.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/worker.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "worker.o",
+      "daemon/worker.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/daemon/worker.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/worker.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/keyraw.o",
+      "sldns/keyraw.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/keyraw.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/keyraw.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "keyraw.o",
+      "sldns/keyraw.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/keyraw.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/keyraw.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/sbuffer.o",
+      "sldns/sbuffer.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/sbuffer.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/sbuffer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "sbuffer.o",
+      "sldns/sbuffer.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/sbuffer.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sbuffer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/wire2str.o",
+      "sldns/wire2str.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/wire2str.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/wire2str.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "wire2str.o",
+      "sldns/wire2str.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/wire2str.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/wire2str.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/parse.o",
+      "sldns/parse.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/parse.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/parse.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "parse.o",
+      "sldns/parse.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/parse.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/parse.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/parseutil.o",
+      "sldns/parseutil.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/parseutil.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/parseutil.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "parseutil.o",
+      "sldns/parseutil.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/parseutil.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/parseutil.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/rrdef.o",
+      "sldns/rrdef.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/rrdef.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/rrdef.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "rrdef.o",
+      "sldns/rrdef.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/rrdef.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/rrdef.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/str2wire.o",
+      "sldns/str2wire.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/str2wire.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/str2wire.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "str2wire.o",
+      "sldns/str2wire.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/sldns/str2wire.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/str2wire.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/strlcat.o",
+      "compat/strlcat.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/compat/strlcat.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/strlcat.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "strlcat.o",
+      "compat/strlcat.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/compat/strlcat.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/strlcat.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/strlcpy.o",
+      "compat/strlcpy.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/compat/strlcpy.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/strlcpy.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "strlcpy.o",
+      "compat/strlcpy.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/compat/strlcpy.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/strlcpy.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/arc4random.o",
+      "compat/arc4random.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/compat/arc4random.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/arc4random.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "arc4random.o",
+      "compat/arc4random.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/compat/arc4random.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/arc4random.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/arc4random_uniform.o",
+      "compat/arc4random_uniform.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/compat/arc4random_uniform.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/arc4random_uniform.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "arc4random_uniform.o",
+      "compat/arc4random_uniform.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/compat/arc4random_uniform.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/arc4random_uniform.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/arc4_lock.o",
+      "compat/arc4_lock.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/compat/arc4_lock.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/arc4_lock.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "arc4_lock.o",
+      "compat/arc4_lock.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/compat/arc4_lock.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/arc4_lock.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/context.o",
+      "libunbound/context.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/libunbound/context.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/context.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "context.o",
+      "libunbound/context.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/libunbound/context.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/context.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/libunbound.o",
+      "libunbound/libunbound.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/libunbound/libunbound.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/libunbound.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "libunbound.o",
+      "libunbound/libunbound.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/libunbound/libunbound.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/libunbound.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/libworker.o",
+      "libunbound/libworker.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/libunbound/libworker.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/libworker.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "libworker.o",
+      "libunbound/libworker.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/libunbound/libworker.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/libworker.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/ub_event_pluggable.o",
+      "util/ub_event_pluggable.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/ub_event_pluggable.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/ub_event_pluggable.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "ub_event_pluggable.o",
+      "util/ub_event_pluggable.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/util/ub_event_pluggable.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/ub_event_pluggable.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/unbound-checkconf.o",
+      "smallapp/unbound-checkconf.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/smallapp/unbound-checkconf.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/unbound-checkconf.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "unbound-checkconf.o",
+      "smallapp/unbound-checkconf.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/smallapp/unbound-checkconf.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/unbound-checkconf.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/worker_cb.o",
+      "smallapp/worker_cb.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/smallapp/worker_cb.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/worker_cb.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "worker_cb.o",
+      "smallapp/worker_cb.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/smallapp/worker_cb.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/worker_cb.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/unbound-host.o",
+      "smallapp/unbound-host.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/smallapp/unbound-host.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/unbound-host.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "unbound-host.o",
+      "smallapp/unbound-host.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/smallapp/unbound-host.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/unbound-host.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/unbound-control.o",
+      "smallapp/unbound-control.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/smallapp/unbound-control.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/unbound-control.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "unbound-control.o",
+      "smallapp/unbound-control.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/smallapp/unbound-control.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/unbound-control.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-fPIC",
+      "-DPIC",
+      "-o",
+      ".libs/unbound-anchor.o",
+      "smallapp/unbound-anchor.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/smallapp/unbound-anchor.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/.libs/unbound-anchor.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-I.",
+      "-DSRCDIR=.",
+      "-g",
+      "-O2",
+      "-flto",
+      "-c",
+      "-o",
+      "unbound-anchor.o",
+      "smallapp/unbound-anchor.c"
+    ],
+    "directory": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound",
+    "file": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/smallapp/unbound-anchor.c",
+    "output": "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/unbound-anchor.o"
+  }
+]
