@@ -1369,7 +1369,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 		if (sock_queue_timeout && !set_recvtimestamp(s)) {
 			log_warn("socket timestamping is not available");
 		}
-		printf("[listen_dnsport.c // ports_create_if // udp]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
+		printf("[listen_dnsport.c // ports_create_if // udp(normal)]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
 		if(!port_insert(list, s, is_dnscrypt
 			?listen_type_udp_dnscrypt :
 			(sock_queue_timeout ?
@@ -1382,6 +1382,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 			return 0;
 		}
 
+		printf("[listen_dnsport.c // ports_create_if // udp(coap)]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
 		if(!port_insert(list, s_coap, listen_type_coap,
 			is_pp2, ub_sock_coap)) {
 			sock_close(s);
@@ -1511,12 +1512,12 @@ listen_create(struct comm_base* base, struct listen_port* ports,
 		struct comm_point* cp = NULL;
 		if(ports->ftype == listen_type_udp ||
 		   ports->ftype == listen_type_udp_dnscrypt) {
-		 	printf("[listen_dnsport.c // listen_create() // udp]: Create comm point for UDP\n");
+		 	printf("[listen_dnsport.c // listen_create() // udp(normal)]: Create comm point for UDP\n");
 			cp = comm_point_create_udp(base, ports->fd,
 				front->udp_buff, ports->pp2_enabled, cb,
 				cb_arg, ports->socket, ports->ftype);
 		} else if(ports->ftype == listen_type_coap) {
-		 	printf("[listen_dnsport.c // listen_create() // udp]: Create comm point for UDP\n");
+		 	printf("[listen_dnsport.c // listen_create() // udp(coap)]: Create comm point for UDP\n");
 			cp = comm_point_create_udp(base, ports->fd,
 				front->udp_buff, ports->pp2_enabled, cb,
 				cb_arg, ports->socket, ports->ftype);
@@ -1978,7 +1979,7 @@ listening_ports_open(struct config_file* cfg, char** ifs, int num_ifs,
 			if(!do_ip6)
 				continue;
 			hints.ai_family = AF_INET6;
-			printf("[unbound.c // listening_ports_open() // ipv6]: Create ipv6 socket (call ports_create_if)\n\n");
+			printf("[listen_dnsport.c // listening_ports_open() // ipv6]: Create ipv6 socket (call ports_create_if)\n\n");
 			if(!ports_create_if(ifs[i], 0, cfg->do_udp,
 				do_tcp, &hints, portbuf, &list,
 				cfg->so_rcvbuf, cfg->so_sndbuf,
@@ -1995,7 +1996,7 @@ listening_ports_open(struct config_file* cfg, char** ifs, int num_ifs,
 			if(!do_ip4)
 				continue;
 			hints.ai_family = AF_INET;
-			printf("[unbound.c // listening_ports_open() // ipv4]: Create ipv4 socket (call ports_create_if)\n\n");
+			printf("[listen_dnsport.c // listening_ports_open() // ipv4]: Create ipv4 socket (call ports_create_if)\n\n");
 			if(!ports_create_if(ifs[i], 0, cfg->do_udp,
 				do_tcp, &hints, portbuf, &list,
 				cfg->so_rcvbuf, cfg->so_sndbuf,
