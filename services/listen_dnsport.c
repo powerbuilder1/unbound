@@ -82,6 +82,7 @@
 #ifdef HAVE_LINUX_NET_TSTAMP_H
 #include <linux/net_tstamp.h>
 #endif
+#include <coap3/coap.h>
 /** number of queued TCP connections for listen() */
 #define TCP_BACKLOG 256
 
@@ -212,7 +213,7 @@ int
 create_udp_sock(int family, int socktype, struct sockaddr* addr,
         socklen_t addrlen, int v6only, int* inuse, int* noproto,
 	int rcv, int snd, int listen, int* reuseport, int transparent,
-	int freebind, int use_systemd, int dscp)
+	int freebind, int use_systemd, int dscp, coap_context_t* context, enum listen_type ftype)
 {
 	int s;
 	char* err;
@@ -247,26 +248,32 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
 #else
 	(void)use_systemd;
 #endif
-	if((s = socket(family, socktype, 0)) == -1) {
-		*inuse = 0;
+    if (ftype == listen_type_udp) {
+        if((s = socket(family, socktype, 0)) == -1) {
+            *inuse = 0;
 #ifndef USE_WINSOCK
-		if(errno == EAFNOSUPPORT || errno == EPROTONOSUPPORT) {
-			*noproto = 1;
-			return -1;
-		}
+            if(errno == EAFNOSUPPORT || errno == EPROTONOSUPPORT) {
+                *noproto = 1;
+                return -1;
+            }
 #else
-		if(WSAGetLastError() == WSAEAFNOSUPPORT ||
-			WSAGetLastError() == WSAEPROTONOSUPPORT) {
-			*noproto = 1;
-			return -1;
-		}
+            if(WSAGetLastError() == WSAEAFNOSUPPORT ||
+                    WSAGetLastError() == WSAEPROTONOSUPPORT) {
+                *noproto = 1;
+                return -1;
+            }
 #endif
-		log_err("can't create socket: %s", sock_strerror(errno));
-		*noproto = 0;
-		return -1;
-	} else {
-		printf("[listen_dnsport.c // create_udp_sock()]: Call socket() func to create listing UDP socket: %s, %s\n", family==AF_INET?"AF_INET":"AF_INET6", socktype==SOCK_STREAM?"SOCK_STREAM":"SOCK_DGRAM");
-	}
+            log_err("can't create socket: %s", sock_strerror(errno));
+            *noproto = 0;
+            return -1;
+        } else {
+            printf("[listen_dnsport.c // create_udp_sock()]: Call socket() func to create listing UDP socket: %s, %s\n", family==AF_INET?"AF_INET":"AF_INET6", socktype==SOCK_STREAM?"SOCK_STREAM":"SOCK_DGRAM");
+        }
+    } else if (ftype == listen_type_coap) {
+        coap_endpoint_t* endpoint;
+        setup_server_context(&context, &endpoint, 7890);
+        s = coap_context_get_coap_fd(context);
+    }
 #ifdef HAVE_SYSTEMD
 	} else {
 		got_fd_from_systemd = 1;
@@ -1012,7 +1019,8 @@ static int
 make_sock(int stype, const char* ifname, const char* port,
 	struct addrinfo *hints, int v6only, int* noip6, size_t rcv, size_t snd,
 	int* reuseport, int transparent, int tcp_mss, int nodelay, int freebind,
-	int use_systemd, int dscp, struct unbound_socket* ub_sock)
+	int use_systemd, int dscp, struct unbound_socket* ub_sock,
+    coap_context_t* context, enum listen_type ftype)
 {
 	struct addrinfo *res = NULL;
 	int r, s, inuse, noproto;
@@ -1039,15 +1047,27 @@ make_sock(int stype, const char* ifname, const char* port,
 	if(stype == SOCK_DGRAM) {
 		verbose_print_addr(res);
 		printf("[listen_dnsport.c // make_sock() // udp]: Call create_udp_sock with parameters from the returned structure of getaddrinfo() call\n");
-		s = create_udp_sock(res->ai_family, res->ai_socktype,
-			(struct sockaddr*)res->ai_addr, res->ai_addrlen,
-			v6only, &inuse, &noproto, (int)rcv, (int)snd, 1,
-			reuseport, transparent, freebind, use_systemd, dscp);
-		if(s == -1 && inuse) {
-			log_err("bind: address already in use");
-		} else if(s == -1 && noproto && hints->ai_family == AF_INET6){
-			*noip6 = 1;
-		}
+        if (ftype == listen_type_coap) {
+            s = create_udp_sock(res->ai_family, res->ai_socktype,
+                (struct sockaddr*)res->ai_addr, res->ai_addrlen,
+                v6only, &inuse, &noproto, (int)rcv, (int)snd, 1,
+                reuseport, transparent, freebind, use_systemd, dscp, NULL, listen_type_udp);
+            if(s == -1 && inuse) {
+                log_err("bind: address already in use");
+            } else if(s == -1 && noproto && hints->ai_family == AF_INET6){
+                *noip6 = 1;
+            }
+        } else if (ftype == listen_type_udp) {
+            s = create_udp_sock(res->ai_family, res->ai_socktype,
+                (struct sockaddr*)res->ai_addr, res->ai_addrlen,
+                v6only, &inuse, &noproto, (int)rcv, (int)snd, 1,
+                reuseport, transparent, freebind, use_systemd, dscp, NULL, listen_type_udp);
+            if(s == -1 && inuse) {
+                log_err("bind: address already in use");
+            } else if(s == -1 && noproto && hints->ai_family == AF_INET6){
+                *noip6 = 1;
+            }
+        }
 	} else	{
 		printf("[listen_dnsport.c // make_sock() // tcp]: Call create_tcp_accept_sock with parameters from the returned structure of getaddrinfo() call (res)\n");
 		s = create_tcp_accept_sock(res, v6only, &noproto, reuseport,
@@ -1071,7 +1091,8 @@ static int
 make_sock_port(int stype, const char* ifname, const char* port,
 	struct addrinfo *hints, int v6only, int* noip6, size_t rcv, size_t snd,
 	int* reuseport, int transparent, int tcp_mss, int nodelay, int freebind,
-	int use_systemd, int dscp, struct unbound_socket* ub_sock)
+	int use_systemd, int dscp, struct unbound_socket* ub_sock,
+    coap_context_t* context, enum listen_type ftype)
 {
 	char* s = strchr(ifname, '@');
 	if(s) {
@@ -1094,14 +1115,14 @@ make_sock_port(int stype, const char* ifname, const char* port,
 		p[strlen(s+1)]=0;
 		return make_sock(stype, newif, p, hints, v6only, noip6, rcv,
 			snd, reuseport, transparent, tcp_mss, nodelay, freebind,
-			use_systemd, dscp, ub_sock);
+			use_systemd, dscp, ub_sock, context, ftype);
 	}
 
 	printf("[listen_dnsport.c // make_sock_port()]: Call make_sock() for IP: %s, Port: %d\n", ifname, atoi(port));
 
 	return make_sock(stype, ifname, port, hints, v6only, noip6, rcv, snd,
 		reuseport, transparent, tcp_mss, nodelay, freebind, use_systemd,
-		dscp, ub_sock);
+		dscp, ub_sock, context, ftype);
 }
 
 /**
@@ -1115,7 +1136,7 @@ make_sock_port(int stype, const char* ifname, const char* port,
  */
 static int
 port_insert(struct listen_port** list, int s, enum listen_type ftype,
-	int pp2_enabled, struct unbound_socket* ub_sock)
+	int pp2_enabled, struct unbound_socket* ub_sock, coap_context_t* context)
 {
 	struct listen_port* item = (struct listen_port*)malloc(
 		sizeof(struct listen_port));
@@ -1269,12 +1290,23 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 	int is_dnscrypt = if_is_dnscrypt(ifname, port, dnscrypt_port);
 	int is_pp2 = if_is_pp2(ifname, port, proxy_protocol_port);
 	int nodelay = is_https && http2_nodelay;
+
 	struct unbound_socket* ub_sock;
 
     struct unbound_socket* ub_sock_coap;
+
+    struct unbound_socket* ub_sock_coap_test;
+
 	char coap_portbuf[32];
     int coap_port = 5683;
 	snprintf(coap_portbuf, sizeof(coap_portbuf), "%d", coap_port);
+
+	char coap_portbuf_test[32];
+    int coap_port_test = 5684;
+	snprintf(coap_portbuf_test, sizeof(coap_portbuf_test), "%d", coap_port_test);
+
+    coap_context_t* context;
+    int s_coap_test;
 
 	if(!do_udp && !do_tcp)
 		return 0;
@@ -1295,7 +1327,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 			return 0;
 		if((s = make_sock_port(SOCK_DGRAM, ifname, port, hints, 1,
 			&noip6, rcv, snd, reuseport, transparent,
-			tcp_mss, nodelay, freebind, use_systemd, dscp, ub_sock)) == -1) {
+			tcp_mss, nodelay, freebind, use_systemd, dscp, ub_sock, NULL, listen_type_udp)) == -1) {
 			if(ub_sock->addr)
 				freeaddrinfo(ub_sock->addr);
 			free(ub_sock);
@@ -1319,7 +1351,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 		printf("[listen_dnsport.c // ports_create_if]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
 		if(!port_insert(list, s, is_dnscrypt
 			?listen_type_udpancil_dnscrypt:listen_type_udpancil,
-			is_pp2, ub_sock)) {
+			is_pp2, ub_sock, NULL)) {
 			sock_close(s);
 			if(ub_sock->addr)
 				freeaddrinfo(ub_sock->addr);
@@ -1331,16 +1363,21 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 
         ub_sock_coap = calloc(1, sizeof(struct unbound_socket));
 
+        ub_sock_coap_test = calloc(1, sizeof(struct unbound_socket));
+
 		if(!ub_sock)
 			return 0;
 
 		if(!ub_sock_coap)
 			return 0;
 
+		if(!ub_sock_coap_test)
+			return 0;
+
 		/* regular udp socket */
 		if((s = make_sock_port(SOCK_DGRAM, ifname, port, hints, 1,
 			&noip6, rcv, snd, reuseport, transparent,
-			tcp_mss, nodelay, freebind, use_systemd, dscp, ub_sock)) == -1) {
+			tcp_mss, nodelay, freebind, use_systemd, dscp, ub_sock, NULL, listen_type_udp)) == -1) {
 			if(ub_sock->addr)
 				freeaddrinfo(ub_sock->addr);
 			free(ub_sock);
@@ -1355,7 +1392,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 		/* regular udp socket (for coap) */
 		if((s_coap = make_sock_port(SOCK_DGRAM, ifname, coap_portbuf, hints, 1,
 			&noip6, rcv, snd, reuseport, transparent,
-			tcp_mss, nodelay, freebind, use_systemd, dscp, ub_sock_coap)) == -1) {
+			tcp_mss, nodelay, freebind, use_systemd, dscp, ub_sock_coap, NULL, listen_type_udp)) == -1) {
 			if(ub_sock_coap->addr)
 				freeaddrinfo(ub_sock_coap->addr);
 			free(ub_sock_coap);
@@ -1366,6 +1403,30 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 			printf("port_create_if call make_sock_port udp");
 			return 0;
 		}
+
+
+        /** setup_server_context(&context, &endpoint, 7890); **/
+
+        /** s_coap_test = coap_context_get_coap_fd(context); **/
+
+		/* regular udp socket (for coap) */
+		if((s_coap_test = make_sock_port(SOCK_DGRAM, ifname, coap_portbuf_test, hints, 1,
+			&noip6, rcv, snd, reuseport, transparent,
+			tcp_mss, nodelay, freebind, use_systemd, dscp, ub_sock_coap_test, context, listen_type_coap)) == -1) {
+			if(ub_sock_coap_test->addr)
+				freeaddrinfo(ub_sock_coap_test->addr);
+			free(ub_sock_coap_test);
+			if(noip6) {
+				log_warn("IPv6 protocol not available");
+				return 1;
+			}
+			printf("port_create_if call make_sock_port udp");
+			return 0;
+		}
+
+
+
+
 		if (sock_queue_timeout && !set_recvtimestamp(s)) {
 			log_warn("socket timestamping is not available");
 		}
@@ -1374,7 +1435,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 			?listen_type_udp_dnscrypt :
 			(sock_queue_timeout ?
 				listen_type_udpancil:listen_type_udp),
-			is_pp2, ub_sock)) {
+			is_pp2, ub_sock, NULL)) {
 			sock_close(s);
 			if(ub_sock->addr)
 				freeaddrinfo(ub_sock->addr);
@@ -1384,11 +1445,21 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 
 		printf("[listen_dnsport.c // ports_create_if // udp(coap)]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
 		if(!port_insert(list, s_coap, listen_type_coap,
-			is_pp2, ub_sock_coap)) {
-			sock_close(s);
+			is_pp2, ub_sock_coap, NULL)) {
+			sock_close(s_coap);
 			if(ub_sock_coap->addr)
 				freeaddrinfo(ub_sock_coap->addr);
 			free(ub_sock_coap);
+			return 0;
+		}
+
+		printf("[listen_dnsport.c // ports_create_if // udp(coap)]: Insert listing port to list: IP: %s, Port: %d\n\n", ifname, atoi(port));
+		if(!port_insert(list, s_coap_test, listen_type_coap,
+			is_pp2, ub_sock_coap_test, context)) {
+			sock_close(s_coap_test);
+			if(ub_sock_coap_test->addr)
+				freeaddrinfo(ub_sock_coap_test->addr);
+			free(ub_sock_coap_test);
 			return 0;
 		}
 	}
@@ -1409,7 +1480,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 			port_type = listen_type_tcp;
 		if((s = make_sock_port(SOCK_STREAM, ifname, port, hints, 1,
 			&noip6, 0, 0, reuseport, transparent, tcp_mss, nodelay,
-			freebind, use_systemd, dscp, ub_sock)) == -1) {
+			freebind, use_systemd, dscp, ub_sock, NULL, listen_type_tcp)) == -1) {
 			if(ub_sock->addr)
 				freeaddrinfo(ub_sock->addr);
 			free(ub_sock);
@@ -1422,7 +1493,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 		if(is_ssl)
 			verbose(VERB_ALGO, "setup TCP for SSL service");
 		printf("[listen_dnsport.c // ports_create_if // tcp]: Insert listing port to list: IP: %s, Port: %d, Port_type: %s\n", ifname, atoi(port), port_type==listen_type_ssl?"SSL":port_type==listen_type_http?"HTTP":port_type==listen_type_tcp_dnscrypt?"TCP-DNSCRYPT":"TCP");
-		if(!port_insert(list, s, port_type, is_pp2, ub_sock)) {
+		if(!port_insert(list, s, port_type, is_pp2, ub_sock, NULL)) {
 			sock_close(s);
 			if(ub_sock->addr)
 				freeaddrinfo(ub_sock->addr);
@@ -1432,6 +1503,27 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 	}
 	return 1;
 }
+
+void
+setup_server_context(coap_context_t** context, coap_endpoint_t** endpoint, int port) {
+    coap_endpoint_t* new_endpoint;
+    coap_address_t listen_addr;
+    coap_context_t* new_context = coap_new_context(NULL);
+
+    coap_context_set_block_mode(new_context,
+            COAP_BLOCK_USE_LIBCOAP | COAP_BLOCK_SINGLE_BODY);
+
+    coap_address_init(&listen_addr);
+    listen_addr.addr.sa.sa_family = AF_INET;
+    listen_addr.addr.sin.sin_port = htons(port);
+
+    new_endpoint = coap_new_endpoint(new_context, &listen_addr, COAP_PROTO_UDP);
+
+    *context = new_context;
+    *endpoint = new_endpoint;
+}
+
+
 
 /**
  * Add items to commpoint list in front.

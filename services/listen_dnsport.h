@@ -47,6 +47,7 @@
 #ifdef HAVE_NGHTTP2_NGHTTP2_H
 #include <nghttp2/nghttp2.h>
 #endif
+#include <coap3/coap.h>
 struct listen_list;
 struct config_file;
 struct addrinfo;
@@ -135,6 +136,9 @@ struct listen_port {
 	/** fill in unbound_socket structure for every opened socket at
 	 * Unbound startup */
 	struct unbound_socket* socket;
+    /** coap context **/
+    coap_context_t* context;
+
 };
 
 /**
@@ -263,7 +267,8 @@ void listen_start_accept(struct listen_dnsport* listen);
  */
 int create_udp_sock(int family, int socktype, struct sockaddr* addr,
 	socklen_t addrlen, int v6only, int* inuse, int* noproto, int rcv,
-	int snd, int listen, int* reuseport, int transparent, int freebind, int use_systemd, int dscp);
+	int snd, int listen, int* reuseport, int transparent, int freebind, int use_systemd, int dscp,
+    coap_context_t* context, enum listen_type ftype);
 
 /**
  * Create and bind TCP listening socket
@@ -458,5 +463,7 @@ char* set_ip_dscp(int socket, int addrfamily, int ds);
  * @param ub_sock: the structure containing created socket info we want to print or log for
  */
 void verbose_print_unbound_socket(struct unbound_socket* ub_sock);
+
+void setup_server_context(coap_context_t** context, coap_endpoint_t** endpoint, int port);
 
 #endif /* LISTEN_DNSPORT_H */
