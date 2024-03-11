@@ -300,7 +300,6 @@ ub_event_new(struct ub_event_base* base, int fd, short bits,
 	// printf("[ub_event.c // ub_event_new()] Set content of event (also callback func.)\n");
 	event_set(ev, fd, NATIVE_BITS(bits), NATIVE_BITS_CB(cb), arg);
 	if (event_base_set(AS_EVENT_BASE(base), ev) != 0) {
-        printf("test\n");
 		free(ev);
 		return NULL;
 	}

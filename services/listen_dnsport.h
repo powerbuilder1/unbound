@@ -268,7 +268,7 @@ void listen_start_accept(struct listen_dnsport* listen);
 int create_udp_sock(int family, int socktype, struct sockaddr* addr,
 	socklen_t addrlen, int v6only, int* inuse, int* noproto, int rcv,
 	int snd, int listen, int* reuseport, int transparent, int freebind, int use_systemd, int dscp,
-    coap_context_t* context, enum listen_type ftype);
+    coap_context_t** context, enum listen_type ftype);
 
 /**
  * Create and bind TCP listening socket
@@ -465,5 +465,11 @@ char* set_ip_dscp(int socket, int addrfamily, int ds);
 void verbose_print_unbound_socket(struct unbound_socket* ub_sock);
 
 void setup_server_context(coap_context_t** context, coap_endpoint_t** endpoint, int port);
+
+static void init_resources(coap_context_t* ctx);
+
+static void hnd_get_dns(coap_resource_t* resource, coap_session_t* session,
+        const coap_pdu_t* request, const coap_string_t* query,
+        coap_pdu_t* response);
 
 #endif /* LISTEN_DNSPORT_H */
