@@ -4,22 +4,22 @@
  * Copyright (c) 2008, NLnet Labs. All rights reserved.
  *
  * This software is open source.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer.
- * 
+ *
  * Redistributions in binary form must reproduce the above copyright notice,
  * this list of conditions and the following disclaimer in the documentation
  * and/or other materials provided with the distribution.
- * 
+ *
  * Neither the name of the NLNET LABS nor the names of its contributors may
  * be used to endorse or promote products derived from this software without
  * specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -94,7 +94,7 @@ void addr_tree_addrport_init(rbtree_type* tree)
 	rbtree_init(tree, &addr_tree_addrport_compare);
 }
 
-int name_tree_insert(rbtree_type* tree, struct name_tree_node* node, 
+int name_tree_insert(rbtree_type* tree, struct name_tree_node* node,
         uint8_t* name, size_t len, int labs, uint16_t dclass)
 {
 	node->node.key = node;
@@ -176,7 +176,7 @@ void name_tree_init_parents(rbtree_type* tree)
         }
 }
 
-struct name_tree_node* name_tree_find(rbtree_type* tree, uint8_t* name, 
+struct name_tree_node* name_tree_find(rbtree_type* tree, uint8_t* name,
         size_t len, int labs, uint16_t dclass)
 {
 	struct name_tree_node key;
@@ -220,13 +220,25 @@ struct name_tree_node* name_tree_lookup(rbtree_type* tree, uint8_t* name,
 	return result;
 }
 
-struct addr_tree_node* addr_tree_lookup(rbtree_type* tree, 
+struct addr_tree_node* addr_tree_lookup(rbtree_type* tree,
         struct sockaddr_storage* addr, socklen_t addrlen)
 {
         rbnode_type* res = NULL;
         struct addr_tree_node* result;
         struct addr_tree_node key;
         key.node.key = &key;
+        /**
+        printf("Size of addr: %d\n", addrlen);
+        printf("Size of key.addr: %lu\n", sizeof(key.addr));
+        char addr_str[INET6_ADDRSTRLEN]; // Groß genug für IPv6
+        struct sockaddr_in *addr_in = (struct sockaddr_in *)addr;
+        if (inet_ntop(AF_INET, &addr_in->sin_addr, addr_str, sizeof(addr_str))) {
+            printf("IPv4 Address: %s\n", addr_str);
+        }
+        if(addrlen > sizeof(key.addr)) {
+            printf("not good\n");
+        }
+        **/
         memcpy(&key.addr, addr, addrlen);
         key.addrlen = addrlen;
         key.net = (addr_is_ip6(addr, addrlen)?128:32);

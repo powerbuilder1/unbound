@@ -466,7 +466,7 @@ void verbose_print_unbound_socket(struct unbound_socket* ub_sock);
 
 void setup_server_context(coap_context_t** context, coap_endpoint_t** endpoint, int port);
 
-static void init_resources(coap_context_t* ctx);
+static void init_resources(coap_context_t* ctx, struct comm_point* cp);
 
 static void hnd_get_dns(coap_resource_t* resource, coap_session_t* session,
         const coap_pdu_t* request, const coap_string_t* query,

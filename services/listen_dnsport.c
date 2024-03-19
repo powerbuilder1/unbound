@@ -83,6 +83,9 @@
 #include <linux/net_tstamp.h>
 #endif
 #include <coap3/coap.h>
+#include <sldns/wire2str.h>
+#include "util/ub_event.h"
+
 /** number of queued TCP connections for listen() */
 #define TCP_BACKLOG 256
 
@@ -278,21 +281,7 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
         printf("[listen_dnsport.c // create_udp_sock()]: Create COAP Endpoint + Context + Resource\n");
         coap_endpoint_t* endpoint;
         setup_server_context(context, &endpoint, port);
-        init_resources(*context);
         s = coap_context_get_coap_fd(*context);
-        int wait_ms = COAP_RESOURCE_CHECK_TIME * 1000;
-
-        /**
-        while (1) {
-            int result = coap_io_process(context, wait_ms);
-            if (result < 0) {
-                // Fehler bei der Verarbeitung
-                fprintf(stderr, "Fehler bei der Verarbeitung der CoAP-Anfrage\n");
-                break;
-            }
-            // Führe andere Aktivitäten aus oder wiederhole die Schleife
-        };
-        **/
         return s;
     }
 #ifdef HAVE_SYSTEMD
@@ -1574,13 +1563,122 @@ static void hnd_get_dns(coap_resource_t* resource, coap_session_t* session,
 }
 
 static void
-init_resources(coap_context_t* ctx) {
+hnd_fetch_dns(coap_resource_t *resource, coap_session_t *session,
+        const coap_pdu_t *request, const coap_string_t *query,
+        coap_pdu_t *response) {
+
+    struct comm_point* cp = coap_resource_get_userdata(resource);
+    printf("Comm POINT FD: %d\n", cp->fd);
+
+    size_t size;
+    uint8_t* data;
+    struct comm_reply rep;
+    rep.c = (struct comm_point*)cp;
+    struct sldns_buffer* buffer;
+
+    // Abrufen der Remote-Adresse der CoAP-Session
+    const coap_address_t* remote_addr = coap_session_get_addr_remote(session);
+
+    // Stellen Sie sicher, dass die Remote-Adresse auf IPv4 oder IPv6 festgelegt ist
+    if (remote_addr->addr.sa.sa_family == AF_INET) {
+        // IPv4-Adresse kopieren
+        memcpy(&rep.remote_addr, &remote_addr->addr.sin, sizeof(struct sockaddr_in));
+        rep.remote_addrlen = sizeof(struct sockaddr_in);
+        memcpy(&rep.client_addr, &remote_addr->addr.sin, sizeof(struct sockaddr_in));
+        rep.client_addrlen= sizeof(struct sockaddr_in);
+    } else if (remote_addr->addr.sa.sa_family == AF_INET6) {
+        // IPv6-Adresse kopieren
+        memcpy(&rep.remote_addr, &remote_addr->addr.sin6, sizeof(struct sockaddr_in6));
+        rep.remote_addrlen = sizeof(struct sockaddr_in6);
+        memcpy(&rep.client_addr, &remote_addr->addr.sin, sizeof(struct sockaddr_in6));
+        rep.client_addrlen= sizeof(struct sockaddr_in6);
+    }
+
+    // ub_comm_base_now(rep.c->ev->base);
+
+    // Versuchen, die Daten aus dem PDU zu extrahieren
+    if (coap_get_data(request, &size, &data)) {
+        // Daten erfolgreich extrahiert, 'data' enthält jetzt den Payload, 'size' dessen Größe
+        // printf("Received data: %.*s\n", (int)size, data);
+
+        // Verarbeiten Sie hier die erhaltenen Daten
+
+        // Überprüfen, ob genügend Platz im Buffer ist
+        /*
+        if (sldns_buffer_remaining(rep.c->buffer) >= size) {
+            // Daten in den Buffer kopieren
+            memcpy(sldns_buffer_current(rep.c->buffer), data, size);
+
+            // Buffer-Position aktualisieren
+            sldns_buffer_skip(rep.c->buffer, size);
+
+            // Buffer für Leseoperationen vorbereiten
+            sldns_buffer_flip(rep.c->buffer);
+        } else {
+            // Fehlerbehandlung: nicht genügend Platz
+            log_err("Nicht genügend Platz im Buffer für die Daten");
+        }
+        */
+        // Sicherstellen, dass der Buffer des comm_point groß genug ist
+        if (sldns_buffer_capacity(rep.c->buffer) < size) {
+            // Hier könnten Sie den Buffer erweitern, Fehlerbehandlung auslassen für Kürze
+        }
+
+        sldns_buffer_clear(rep.c->buffer);
+
+         // Handle IPv4
+        char ipstr[INET6_ADDRSTRLEN]; // Groß genug für die Darstellung von IPv6
+        struct sockaddr_in *addr_in = (struct sockaddr_in *)&rep.remote_addr;
+        inet_ntop(AF_INET, &addr_in->sin_addr, ipstr, sizeof(ipstr));
+        printf("IPv4 Remote Address (res. callback): %s\n", ipstr);
+
+        rep.remote_addrlen = (socklen_t)sizeof(rep.remote_addr);
+
+        sldns_buffer_write(rep.c->buffer, data, size);
+        sldns_buffer_flip(rep.c->buffer);
+
+        // Die Daten sind nun im rep.c->buffer und können weiterverarbeitet werden
+        // Zum Beispiel, um sie in eine ASCII-Repräsentation zu konvertieren
+        char* str = sldns_wire2str_pkt(sldns_buffer_begin(rep.c->buffer), sldns_buffer_remaining(rep.c->buffer));
+        printf("ASCII representation of the data: %s\n", str);
+        free(str);
+
+        rep.srctype = 0;
+		rep.is_proxied = 0;
+
+		printf("[netevent.c // comm_point_udp_callback()] Calling callback of the comm_point\n");
+		fptr_ok(fptr_whitelist_comm_point(rep.c->callback));
+		if((*rep.c->callback)(rep.c, rep.c->cb_arg, NETEVENT_NOERROR, &rep)) {
+			/* send back immediate reply */
+            printf("Send reponse\n");
+            buffer = rep.c->buffer;
+            const uint8_t* buffer_data = sldns_buffer_begin(buffer);
+            size_t buffer_length =sldns_buffer_remaining(buffer);
+            coap_pdu_set_code(response, COAP_RESPONSE_CODE_CONTENT);
+
+            coap_add_data(response, buffer_length, (const uint8_t*)buffer_data);
+		}
+    }
+
+    /**
+    coap_pdu_set_code(response, COAP_RESPONSE_CODE_CONTENT);
+
+    const char* response_data = "Server Antwort";
+    coap_add_data(response, strlen(response_data), (const uint8_t*)response_data);
+    **/
+}
+
+static void
+init_resources(coap_context_t* ctx, struct comm_point* cp) {
     coap_resource_t* r;
 
     r = coap_resource_init(coap_make_str_const("dns"),
             COAP_RESOURCE_FLAGS_NOTIFY_CON);
 
+    coap_resource_set_userdata(r, cp);
+
     coap_register_handler(r, COAP_REQUEST_GET, hnd_get_dns);
+    coap_register_handler(r, COAP_REQUEST_FETCH, hnd_fetch_dns);
 
     coap_add_resource(ctx, r);
 }
@@ -1673,6 +1771,7 @@ listen_create(struct comm_base* base, struct listen_port* ports,
 			cp = comm_point_create_udp(base, ports->fd,
 				front->udp_buff, ports->pp2_enabled, cb,
 				cb_arg, ports->socket, ports->ftype, ports->context);
+            init_resources(cp->context, cp);
 		} else if(ports->ftype == listen_type_tcp ||
 				ports->ftype == listen_type_tcp_dnscrypt) {
 			printf("[listen_dnsport.c // listen_create() // tcp]: Create comm point for TCP\n");

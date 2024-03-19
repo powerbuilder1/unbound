@@ -1302,17 +1302,21 @@ deny_refuse_all(struct comm_point* c, enum acl_access* acl,
 	struct check_request_result* check_result)
 {
 	if(check_proxy) {
+        printf("test1\n");
 		*acladdr = acl_addr_lookup(worker->daemon->acl,
 			&repinfo->remote_addr, repinfo->remote_addrlen);
 	} else {
+        printf("test2\n");
 		*acladdr = acl_addr_lookup(worker->daemon->acl,
 			&repinfo->client_addr, repinfo->client_addrlen);
 	}
 	/* If there is no ACL based on client IP use the interface ACL. */
 	if(!(*acladdr) && c->socket) {
+        printf("test3\n");
 		*acladdr = c->socket->acl;
 	}
 	*acl = acl_get_control(*acladdr);
+    printf("test4\n");
 	return deny_refuse(c, *acl, acl_deny, acl_refuse, worker, repinfo,
 		*acladdr, ede, check_result);
 }
@@ -1413,6 +1417,8 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 		}
 	}
 
+    printf("1\n");
+
 #ifdef USE_DNSCRYPT
 	repinfo->max_udp_size = worker->daemon->cfg->max_udp_size;
 	if(!dnsc_handle_curved_request(worker->daemon->dnscenv, repinfo)) {
@@ -1458,6 +1464,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 		worker->stats.num_query_dnscrypt_crypted++;
 	}
 #endif
+    printf("2\n");
 #ifdef USE_DNSTAP
 	/*
 	 * sending src (client)/dst (local service) addresses over DNSTAP from incoming request handler

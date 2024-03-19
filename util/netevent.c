@@ -1120,9 +1120,21 @@ comm_point_udp_callback(int fd, short event, void* arg)
 		*/
 	 	printf("[netevent.c // comm_point_udp_callback()] Receiving data from listening socket and write to buffer\n");
         printf("lol\n");
+        /**
+        char addr_str[INET6_ADDRSTRLEN]; // Groß genug für IPv6
+        struct sockaddr_in *addr_in = (struct sockaddr_in *)&rep.remote_addr;
+        if (inet_ntop(AF_INET, &addr_in->sin_addr, addr_str, sizeof(addr_str))) {
+            printf("IPv4 Address: (udp callback, before recvfrom) %s\n", addr_str);
+        }
+        **/
 		rcv = recvfrom(fd, (void*)sldns_buffer_begin(rep.c->buffer),
 			sldns_buffer_remaining(rep.c->buffer), MSG_DONTWAIT,
 			(struct sockaddr*)&rep.remote_addr, &rep.remote_addrlen);
+        /**
+        if (inet_ntop(AF_INET, &addr_in->sin_addr, addr_str, sizeof(addr_str))) {
+            printf("IPv4 Address: (udp callback, after recvfrom) %s\n", addr_str);
+        }
+        **/
 		if(rcv == -1) {
 #ifndef USE_WINSOCK
 			if(errno != EAGAIN && errno != EINTR
@@ -1192,9 +1204,7 @@ comm_point_oscore_callback(int fd, short event, void* arg)
     struct comm_point* cp = (struct comm_point*)arg;
     if (event & EV_READ) {
         // Verarbeiten Sie eingehende CoAP-Anfragen über den CoAP-Context
-        printf("CONTEXT POINTER IN EVENT CALLBACK: %p\n", cp->context);
         int result = coap_io_process(cp->context, 0);
-        printf("nonono \n");
     }
 }
 
