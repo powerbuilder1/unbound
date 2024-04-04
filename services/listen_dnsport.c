@@ -39,6 +39,7 @@
  * This file has functions to get queries from clients.
  */
 #include "config.h"
+#include <string.h>
 #ifdef HAVE_SYS_TYPES_H
 #  include <sys/types.h>
 #endif
@@ -1017,7 +1018,6 @@ err:
 	(void)path;
 	log_err("Local sockets are not supported");
 	*noproto = 1;
-	return -1;
 #endif
 }
 
@@ -1574,6 +1574,8 @@ hnd_fetch_dns(coap_resource_t *resource, coap_session_t *session,
     uint8_t* data;
     struct comm_reply rep;
     rep.c = (struct comm_point*)cp;
+    rep.session = session;
+    rep.response = response;
     struct sldns_buffer* buffer;
 
     // Abrufen der Remote-Adresse der CoAP-Session
@@ -1646,18 +1648,16 @@ hnd_fetch_dns(coap_resource_t *resource, coap_session_t *session,
         rep.srctype = 0;
 		rep.is_proxied = 0;
 
-		printf("[netevent.c // comm_point_udp_callback()] Calling callback of the comm_point\n");
+		printf("[listen_dnsport.c // hnd_fetch_dns()] Calling callback of the comm_point\n");
 		fptr_ok(fptr_whitelist_comm_point(rep.c->callback));
-		if((*rep.c->callback)(rep.c, rep.c->cb_arg, NETEVENT_NOERROR, &rep)) {
-			/* send back immediate reply */
-            printf("Send reponse\n");
-            buffer = rep.c->buffer;
-            const uint8_t* buffer_data = sldns_buffer_begin(buffer);
-            size_t buffer_length =sldns_buffer_remaining(buffer);
-            coap_pdu_set_code(response, COAP_RESPONSE_CODE_CONTENT);
+		(*rep.c->callback)(rep.c, rep.c->cb_arg, NETEVENT_NOERROR, &rep);
+        printf("Send reponse\n");
+        buffer = rep.c->buffer;
+        const uint8_t* buffer_data = sldns_buffer_begin(buffer);
+        size_t buffer_length =sldns_buffer_remaining(buffer);
+        coap_pdu_set_code(response, COAP_RESPONSE_CODE_CONTENT);
 
-            coap_add_data(response, buffer_length, (const uint8_t*)buffer_data);
-		}
+        coap_add_data(response, buffer_length, (const uint8_t*)buffer_data);
     }
 
     /**
@@ -1666,6 +1666,179 @@ hnd_fetch_dns(coap_resource_t *resource, coap_session_t *session,
     const char* response_data = "Server Antwort";
     coap_add_data(response, strlen(response_data), (const uint8_t*)response_data);
     **/
+}
+
+coap_pdu_t* copy_coap_response_pdu_without_payload(coap_session_t* session, const coap_pdu_t* original_pdu) {
+    // Erstelle ein neues PDU mit derselben Nachrichten-ID und max. Größe
+    coap_pdu_t* copy = coap_pdu_init(coap_pdu_get_type(original_pdu),
+                                     coap_pdu_get_code(original_pdu),
+                                     coap_pdu_get_mid(original_pdu),
+                                     coap_session_max_pdu_size(session));
+    if (!copy) {
+        return NULL; // Fehlerbehandlung
+    }
+
+    // Kopiere das Token (falls vorhanden)
+    const coap_bin_const_t token = coap_pdu_get_token(original_pdu);
+    coap_add_token(copy, token.length, token.s);
+
+    // Kopiere Optionen
+    coap_opt_iterator_t opt_iter;
+    coap_option_iterator_init((coap_pdu_t*)original_pdu, &opt_iter, COAP_OPT_ALL);
+    coap_opt_t *option;
+    while ((option = coap_option_next(&opt_iter))) {
+        coap_add_option(copy, opt_iter.number, coap_opt_length(option), coap_opt_value(option));
+    }
+
+    return copy;
+}
+
+coap_bin_const_t* copy_coap_bin_const_t(const coap_bin_const_t* original) {
+    if (original == NULL || original->s == NULL || original->length == 0) {
+        return NULL; // Keine gültigen Daten zum Kopieren
+    }
+
+    // Speicher für die Kopie der Struktur reservieren
+    coap_bin_const_t* copy = (coap_bin_const_t*)malloc(sizeof(coap_bin_const_t));
+    if (copy == NULL) {
+        return NULL; // Fehler bei der Speicherreservierung
+    }
+
+    // Speicher für die Token-Daten reservieren
+    copy->s = (uint8_t*)malloc(original->length);
+    if (copy->s == NULL) {
+        free(copy); // Bereits reservierten Speicher freigeben
+        return NULL;
+    }
+
+    // Daten kopieren
+    memcpy(copy->s, original->s, original->length);
+    copy->length = original->length;
+
+    return copy;
+}
+
+
+
+void extract_pdu_info(const coap_pdu_t *pdu, struct pdu_response_data *data) {
+    if (!pdu || !data) return;
+
+    // Typ und Code extrahieren
+    data->type = coap_pdu_get_type(pdu);
+    data->code = coap_pdu_get_code(pdu);
+
+    // Message ID extrahieren
+    data->mid = coap_pdu_get_mid(pdu);
+
+    // Token extrahieren
+    coap_bin_const_t original_token = coap_pdu_get_token(pdu);
+    coap_bin_const_t* token = copy_coap_bin_const_t(&original_token);
+
+    data->token = token;
+
+    printf("Token length: %zu \n", data->token->length);
+    printf("Token (hex): ");
+    for (size_t i = 0; i < data->token->length; ++i) {
+        printf("%02X", data->token->s[i]);
+    }
+    printf("\n");
+
+    // Optionen kopieren
+    coap_opt_iterator_t opt_iter;
+    coap_option_iterator_init((coap_pdu_t*)pdu, &opt_iter, COAP_OPT_ALL);
+    coap_opt_t* option;
+    while ((option = coap_option_next(&opt_iter))) {
+        coap_insert_optlist(&data->options, coap_new_optlist(opt_iter.number, coap_opt_length(option), coap_opt_value(option)));
+    }
+}
+
+
+static void
+hnd_fetch_new_dns(coap_resource_t *resource, coap_session_t *session,
+        const coap_pdu_t *request, const coap_string_t *query,
+        coap_pdu_t *response) {
+
+    struct comm_point* cp = coap_resource_get_userdata(resource);
+    printf("Comm POINT FD: %d\n", cp->fd);
+
+    size_t size;
+    uint8_t* data;
+    struct comm_reply rep;
+    struct pdu_response_data* pdu_wrapper = (struct pdu_response_data*)malloc(sizeof(struct pdu_response_data));
+    rep.c = (struct comm_point*)cp;
+    rep.session = session;
+    rep.response = response;
+
+    struct sldns_buffer* buffer;
+
+    extract_pdu_info(response, pdu_wrapper);
+
+    rep.pdu_wrapper = pdu_wrapper;
+
+    // Abrufen der Remote-Adresse der CoAP-Session
+    const coap_address_t* remote_addr = coap_session_get_addr_remote(session);
+
+    // Stellen Sie sicher, dass die Remote-Adresse auf IPv4 oder IPv6 festgelegt ist
+    if (remote_addr->addr.sa.sa_family == AF_INET) {
+        // IPv4-Adresse kopieren
+        memcpy(&rep.remote_addr, &remote_addr->addr.sin, sizeof(struct sockaddr_in));
+        rep.remote_addrlen = sizeof(struct sockaddr_in);
+        memcpy(&rep.client_addr, &remote_addr->addr.sin, sizeof(struct sockaddr_in));
+        rep.client_addrlen= sizeof(struct sockaddr_in);
+    } else if (remote_addr->addr.sa.sa_family == AF_INET6) {
+        // IPv6-Adresse kopieren
+        memcpy(&rep.remote_addr, &remote_addr->addr.sin6, sizeof(struct sockaddr_in6));
+        rep.remote_addrlen = sizeof(struct sockaddr_in6);
+        memcpy(&rep.client_addr, &remote_addr->addr.sin, sizeof(struct sockaddr_in6));
+        rep.client_addrlen= sizeof(struct sockaddr_in6);
+    }
+
+    // ubcoap_get_data(request, &size, &data_comm_base_now(rep.c->ev->base);
+
+    if (!coap_get_data(request, &size, &data)) {
+        printf("Couldn't get data from coap payload\n");
+    }
+
+    // Sicherstellen, dass der Buffer des comm_point groß genug ist
+    if (sldns_buffer_capacity(rep.c->buffer) < size) {
+        // Hier könnten Sie den Buffer erweitern, Fehlerbehandlung auslassen für Kürze
+    }
+
+    sldns_buffer_clear(rep.c->buffer);
+
+    // Handle IPv4
+    char ipstr[INET6_ADDRSTRLEN]; // Groß genug für die Darstellung von IPv6
+    struct sockaddr_in *addr_in = (struct sockaddr_in *)&rep.remote_addr;
+    inet_ntop(AF_INET, &addr_in->sin_addr, ipstr, sizeof(ipstr));
+    printf("IPv4 Remote Address (res. callback): %s\n", ipstr);
+
+    rep.remote_addrlen = (socklen_t)sizeof(rep.remote_addr);
+
+    sldns_buffer_write(rep.c->buffer, data, size);
+    sldns_buffer_flip(rep.c->buffer);
+
+    // Die Daten sind nun im rep.c->buffer und können weiterverarbeitet werden
+    // Zum Beispiel, um sie in eine ASCII-Repräsentation zu konvertieren
+    char* str = sldns_wire2str_pkt(sldns_buffer_begin(rep.c->buffer), sldns_buffer_remaining(rep.c->buffer));
+    printf("ASCII representation of the data: %s\n", str);
+    free(str);
+
+    rep.srctype = 0;
+    rep.is_proxied = 0;
+
+    printf("[listen_dnsport.c // hnd_fetch_dns()] Calling callback of the comm_point\n");
+    fptr_ok(fptr_whitelist_comm_point(rep.c->callback));
+    if ((*rep.c->callback)(rep.c, rep.c->cb_arg, NETEVENT_NOERROR, &rep)) {
+        printf("Send reponse\n");
+        buffer = rep.c->buffer;
+        const uint8_t* buffer_data = sldns_buffer_begin(buffer);
+        size_t buffer_length =sldns_buffer_remaining(buffer);
+        coap_pdu_set_code(response, COAP_RESPONSE_CODE_CONTENT);
+
+        coap_add_data(response, buffer_length, (const uint8_t*)buffer_data);
+    } else {
+        printf("MID: %d", pdu_wrapper->mid);
+    }
 }
 
 static void
@@ -1678,7 +1851,7 @@ init_resources(coap_context_t* ctx, struct comm_point* cp) {
     coap_resource_set_userdata(r, cp);
 
     coap_register_handler(r, COAP_REQUEST_GET, hnd_get_dns);
-    coap_register_handler(r, COAP_REQUEST_FETCH, hnd_fetch_dns);
+    coap_register_handler(r, COAP_REQUEST_FETCH, hnd_fetch_new_dns);
 
     coap_add_resource(ctx, r);
 }
@@ -1768,7 +1941,7 @@ listen_create(struct comm_base* base, struct listen_port* ports,
 				cb_arg, ports->socket, ports->ftype, NULL);
 		} else if(ports->ftype == listen_type_coap) {
 		 	printf("[listen_dnsport.c // listen_create() // udp(coap)]: Create comm point for UDP\n");
-			cp = comm_point_create_udp(base, ports->fd,
+			cp = comm_point_create_coap(base, ports->fd,
 				front->udp_buff, ports->pp2_enabled, cb,
 				cb_arg, ports->socket, ports->ftype, ports->context);
             init_resources(cp->context, cp);

@@ -141,6 +141,8 @@ struct listen_port {
 
 };
 
+void free_pdu_response_data(struct pdu_response_data* data);
+
 /**
  * Create shared listening ports
  * Getaddrinfo, create socket, bind and listen to zero or more
@@ -355,6 +357,8 @@ struct tcp_req_done_item {
 	/** length of the buffer */
 	size_t len;
 };
+
+void extract_pdu_info(const coap_pdu_t *pdu, struct pdu_response_data *data);
 
 /**
  * Create tcp request info structure that keeps track of open
