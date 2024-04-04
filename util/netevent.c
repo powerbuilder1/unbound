@@ -55,6 +55,7 @@
 #include "dnscrypt/dnscrypt.h"
 #include "services/listen_dnsport.h"
 #include <coap3/coap.h>
+#include <netinet/in.h>
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -379,6 +380,13 @@ comm_point_send_udp_msg(struct comm_point *c, sldns_buffer* packet,
 {
 	ssize_t sent;
 	log_assert(c->fd != -1);
+	char* str = sldns_wire2str_pkt(sldns_buffer_begin(packet), sldns_buffer_remaining(packet));
+	printf("%s\n", str);
+    if (c->context == NULL) {
+        printf("Context is Null\n");
+    } else {
+        printf("Context is not Null\n");
+    }
 #ifdef UNBOUND_DEBUG
 	if(sldns_buffer_remaining(packet) == 0)
 		log_err("error: send empty UDP packet");
@@ -391,6 +399,255 @@ comm_point_send_udp_msg(struct comm_point *c, sldns_buffer* packet,
 	} else {
 		sent = send(c->fd, (void*)sldns_buffer_begin(packet),
 			sldns_buffer_remaining(packet), 0);
+	}
+	if(sent == -1) {
+		/* try again and block, waiting for IO to complete,
+		 * we want to send the answer, and we will wait for
+		 * the ethernet interface buffer to have space. */
+#ifndef USE_WINSOCK
+		if(errno == EAGAIN || errno == EINTR ||
+#  ifdef EWOULDBLOCK
+			errno == EWOULDBLOCK ||
+#  endif
+			errno == ENOBUFS) {
+#else
+		if(WSAGetLastError() == WSAEINPROGRESS ||
+			WSAGetLastError() == WSAEINTR ||
+			WSAGetLastError() == WSAENOBUFS ||
+			WSAGetLastError() == WSAEWOULDBLOCK) {
+#endif
+			int retries = 0;
+			/* if we set the fd blocking, other threads suddenly
+			 * have a blocking fd that they operate on */
+			while(sent == -1 && retries < SEND_BLOCKED_MAX_RETRY && (
+#ifndef USE_WINSOCK
+				errno == EAGAIN || errno == EINTR ||
+#  ifdef EWOULDBLOCK
+				errno == EWOULDBLOCK ||
+#  endif
+				errno == ENOBUFS
+#else
+				WSAGetLastError() == WSAEINPROGRESS ||
+				WSAGetLastError() == WSAEINTR ||
+				WSAGetLastError() == WSAENOBUFS ||
+				WSAGetLastError() == WSAEWOULDBLOCK
+#endif
+			)) {
+#if defined(HAVE_POLL) || defined(USE_WINSOCK)
+				int send_nobufs = (
+#ifndef USE_WINSOCK
+					errno == ENOBUFS
+#else
+					WSAGetLastError() == WSAENOBUFS
+#endif
+				);
+				struct pollfd p;
+				int pret;
+				memset(&p, 0, sizeof(p));
+				p.fd = c->fd;
+				p.events = POLLOUT | POLLERR | POLLHUP;
+#  ifndef USE_WINSOCK
+				pret = poll(&p, 1, SEND_BLOCKED_WAIT_TIMEOUT);
+#  else
+				pret = WSAPoll(&p, 1,
+					SEND_BLOCKED_WAIT_TIMEOUT);
+#  endif
+				if(pret == 0) {
+					/* timer expired */
+					struct comm_base* b = c->ev->base;
+					if(b->eb->last_writewait_log+SLOW_LOG_TIME <=
+						b->eb->secs) {
+						b->eb->last_writewait_log = b->eb->secs;
+						verbose(VERB_OPS, "send udp blocked "
+							"for long, dropping packet.");
+					}
+					return 0;
+				} else if(pret < 0 &&
+#ifndef USE_WINSOCK
+					errno != EAGAIN && errno != EINTR &&
+#  ifdef EWOULDBLOCK
+					errno != EWOULDBLOCK &&
+#  endif
+					errno != ENOBUFS
+#else
+					WSAGetLastError() != WSAEINPROGRESS &&
+					WSAGetLastError() != WSAEINTR &&
+					WSAGetLastError() != WSAENOBUFS &&
+					WSAGetLastError() != WSAEWOULDBLOCK
+#endif
+					) {
+					log_err("poll udp out failed: %s",
+						sock_strerror(errno));
+					return 0;
+				} else if((pret < 0 &&
+#ifndef USE_WINSOCK
+					errno == ENOBUFS
+#else
+					WSAGetLastError() == WSAENOBUFS
+#endif
+					) || (send_nobufs && retries > 0)) {
+					/* ENOBUFS, and poll returned without
+					 * a timeout. Or the retried send call
+					 * returned ENOBUFS. It is good to
+					 * wait a bit for the error to clear. */
+					/* The timeout is 20*(2^(retries+1)),
+					 * it increases exponentially, starting
+					 * at 40 msec. After 5 tries, 1240 msec
+					 * have passed in total, when poll
+					 * returned the error, and 1200 msec
+					 * when send returned the errors. */
+#ifndef USE_WINSOCK
+					pret = poll(NULL, 0, (SEND_BLOCKED_WAIT_TIMEOUT/10)<<(retries+1));
+#else
+					pret = WSAPoll(NULL, 0, (SEND_BLOCKED_WAIT_TIMEOUT/10)<<(retries+1));
+#endif
+					if(pret < 0 &&
+#ifndef USE_WINSOCK
+						errno != EAGAIN && errno != EINTR &&
+#  ifdef EWOULDBLOCK
+						errno != EWOULDBLOCK &&
+#  endif
+						errno != ENOBUFS
+#else
+						WSAGetLastError() != WSAEINPROGRESS &&
+						WSAGetLastError() != WSAEINTR &&
+						WSAGetLastError() != WSAENOBUFS &&
+						WSAGetLastError() != WSAEWOULDBLOCK
+#endif
+					) {
+						log_err("poll udp out timer failed: %s",
+							sock_strerror(errno));
+					}
+				}
+#endif /* defined(HAVE_POLL) || defined(USE_WINSOCK) */
+				retries++;
+				if (!is_connected) {
+					sent = sendto(c->fd, (void*)sldns_buffer_begin(packet),
+						sldns_buffer_remaining(packet), 0,
+						addr, addrlen);
+				} else {
+					sent = send(c->fd, (void*)sldns_buffer_begin(packet),
+						sldns_buffer_remaining(packet), 0);
+				}
+			}
+		}
+	}
+	if(sent == -1) {
+		if(!udp_send_errno_needs_log(addr, addrlen))
+			return 0;
+		if (!is_connected) {
+			verbose(VERB_OPS, "sendto failed: %s", sock_strerror(errno));
+		} else {
+			verbose(VERB_OPS, "send failed: %s", sock_strerror(errno));
+		}
+		if(addr)
+			log_addr(VERB_OPS, "remote address is",
+				(struct sockaddr_storage*)addr, addrlen);
+		return 0;
+	} else if((size_t)sent != sldns_buffer_remaining(packet)) {
+		log_err("sent %d in place of %d bytes",
+			(int)sent, (int)sldns_buffer_remaining(packet));
+		return 0;
+	}
+	return 1;
+}
+
+void sockaddr_to_coap_address(struct sockaddr *addr, coap_address_t *coap_addr) {
+    if (addr->sa_family == AF_INET) {
+        // Es handelt sich um eine IPv4-Adresse
+        struct sockaddr_in *addr_in = (struct sockaddr_in*)addr;
+        coap_addr->addr.sin = *addr_in; // Direkte Zuweisung der gesamten Struktur
+    } else if (addr->sa_family == AF_INET6) {
+        // Es handelt sich um eine IPv6-Adresse
+        struct sockaddr_in6 *addr_in6 = (struct sockaddr_in6*)addr;
+        coap_addr->addr.sin6 = *addr_in6; // Direkte Zuweisung der gesamten Struktur
+    } else {
+        // Unbekannter oder nicht unterstützter Adresstyp
+        fprintf(stderr, "Unsupported address family: %d\n", addr->sa_family);
+    }
+}
+
+coap_pdu_t* create_pdu_from_response_data(coap_session_t* session, const struct pdu_response_data* data) {
+    if (!session || !data) return NULL;
+
+    coap_pdu_t* pdu = coap_pdu_init(data->type, data->code, data->mid, coap_session_max_pdu_size(session));
+    if (!pdu) return NULL;
+
+    if (data->token->s && data->token->length > 0) {
+        printf("Token lenght: %zu\n", data->token->length);
+        if (!coap_add_token(pdu, data->token->length, data->token->s)) {
+            coap_delete_pdu(pdu);
+            return NULL;
+        }
+    }
+
+    coap_optlist_t* opt;
+    for (opt = data->options; opt; opt = opt->next) {
+        if (!coap_add_option(pdu, opt->number, opt->length, opt->data)) {
+            coap_delete_pdu(pdu); // Bei einem Fehler die PDU freigeben
+            return NULL;
+        }
+    }
+
+    return pdu;
+}
+
+/* send a CoAP reply */
+int
+comm_point_send_coap_msg(struct comm_point *c, sldns_buffer* packet,
+	struct sockaddr* addr, socklen_t addrlen, int is_connected, coap_session_t* session, coap_pdu_t* response, struct pdu_response_data* pdu_wrapper)
+{
+    coap_address_t dst;
+
+	ssize_t sent;
+    coap_pdu_t* own_response = create_pdu_from_response_data(session, pdu_wrapper);
+
+    coap_bin_const_t token = coap_pdu_get_token(own_response);
+
+    printf("Response Token (hex): ");
+    for (size_t i = 0; i < token.length; ++i) {
+        printf("%02X", token.s[i]);
+    }
+    printf("\n");
+
+    if (!own_response) {
+    }
+
+	log_assert(c->fd != -1);
+	char* str = sldns_wire2str_pkt(sldns_buffer_begin(packet), sldns_buffer_remaining(packet));
+	printf("%s\n", str);
+    if (c->context == NULL) {
+        printf("Context is Null\n");
+    } else {
+        printf("Context is not Null\n");
+    }
+
+    if (response == NULL) {
+        printf("Response is Null\n");
+    } else {
+        printf("Response is not Null\n");
+    }
+
+    printf("MID: %d\n", pdu_wrapper->mid);
+
+    coap_pdu_set_code(own_response, COAP_RESPONSE_CODE_CONTENT);
+
+    coap_add_data(own_response, sldns_buffer_remaining(packet), (const uint8_t *)sldns_buffer_begin(packet));
+
+    printf("");
+
+
+#ifdef UNBOUND_DEBUG
+	if(sldns_buffer_remaining(packet) == 0)
+		log_err("error: send empty UDP packet");
+#endif
+	log_assert(addr && addrlen > 0);
+	if(!is_connected) {
+        printf("SEND COAP AWNSER\n");
+        coap_send(session, own_response);
+	} else {
+        printf("SEND COAP AWNSER\n");
+        coap_send(session, own_response);
 	}
 	if(sent == -1) {
 		/* try again and block, waiting for IO to complete,
@@ -1095,6 +1352,18 @@ comm_point_udp_callback(int fd, short event, void* arg)
 {
 	printf("[netevent.c // comm_point_udp_callback()] Called callback function for udp requests\n");
 	struct comm_reply rep;
+    printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    char ipstr[INET6_ADDRSTRLEN];
+    struct sockaddr_in *addr_in = (struct sockaddr_in *)&rep.client_addr;
+
+    // Umwandlung der IP-Adresse in einen lesbaren String
+    inet_ntop(AF_INET, &(addr_in->sin_addr), ipstr, INET_ADDRSTRLEN);
+
+    // Umwandlung des Ports von Netzwerk- in Host-Byte-Reihenfolge
+    unsigned int port = ntohs(addr_in->sin_port);
+
+    // Ausgabe der IP-Adresse und des Ports
+    printf("IPv4 Address: %s, Port: %u\n", ipstr, port);;
 	ssize_t rcv;
 	int i;
 	struct sldns_buffer *buffer;
@@ -1158,7 +1427,7 @@ comm_point_udp_callback(int fd, short event, void* arg)
 		char* str = sldns_wire2str_pkt(sldns_buffer_begin(rep.c->buffer), rcv);
 
 		/* Print the ASCII representation */
-		printf("%s\n", str);
+		// printf("%s\n", str);
 
 		/* Clean up */
 		free(str);
@@ -1181,6 +1450,7 @@ comm_point_udp_callback(int fd, short event, void* arg)
 		printf("[netevent.c // comm_point_udp_callback()] Calling callback of the comm_point\n");
 		fptr_ok(fptr_whitelist_comm_point(rep.c->callback));
 		if((*rep.c->callback)(rep.c, rep.c->cb_arg, NETEVENT_NOERROR, &rep)) {
+            printf("NORMAL UDP SUCESS\n");
 			/* send back immediate reply */
 #ifdef USE_DNSCRYPT
 			buffer = rep.c->dnscrypt_buffer;
@@ -1190,7 +1460,9 @@ comm_point_udp_callback(int fd, short event, void* arg)
 			(void)comm_point_send_udp_msg(rep.c, buffer,
 				(struct sockaddr*)&rep.remote_addr,
 				rep.remote_addrlen, 0);
-		}
+		} else {
+            printf("NORMAL UDP FAIL\n");
+        }
 		if(!rep.c || rep.c->fd != fd) /* commpoint closed to -1 or reused for
 		another UDP port. Note rep.c cannot be reused with TCP fd. */
 			break;
@@ -1202,6 +1474,19 @@ comm_point_oscore_callback(int fd, short event, void* arg)
 {
 	printf("[netevent.c // comm_point_oscore_callback()] Called callback function for oscore requests\n");
     struct comm_point* cp = (struct comm_point*)arg;
+	struct comm_reply rep;
+    printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    char ipstr[INET6_ADDRSTRLEN];
+    struct sockaddr_in *addr_in = (struct sockaddr_in *)&rep.client_addr;
+
+    // Umwandlung der IP-Adresse in einen lesbaren String
+    inet_ntop(AF_INET, &(addr_in->sin_addr), ipstr, INET_ADDRSTRLEN);
+
+    // Umwandlung des Ports von Netzwerk- in Host-Byte-Reihenfolge
+    unsigned int port = ntohs(addr_in->sin_port);
+
+    // Ausgabe der IP-Adresse und des Ports
+    printf("IPv4 Address: %s, Port: %u\n", ipstr, port);;
     if (event & EV_READ) {
         // Verarbeiten Sie eingehende CoAP-Anfragen über den CoAP-Context
         int result = coap_io_process(cp->context, 0);
@@ -4038,11 +4323,85 @@ comm_point_create_udp(struct comm_base *base, int fd, sldns_buffer* buffer,
 	/* ub_event stuff */
 	// printf("[netevent.c // comm_point_create_udp] Create Event for UDP Com Point\n");
     if (port_type == listen_type_coap) {
-	    printf("[netevent.c // comm_point_create_udp] Create Event for UDP/COAP Com Point\n");
+	    // printf("[netevent.c // comm_point_create_udp] Create Event for UDP/COAP Com Point\n");
 	    c->ev->ev = ub_event_new(base->eb->base, c->fd, evbits,
 		    comm_point_oscore_callback, c);
     } else {
-	    printf("[netevent.c // comm_point_create_udp] Create Event for UDP(normal) Com Point\n");
+	    // printf("[netevent.c // comm_point_create_udp] Create Event for UDP(normal) Com Point\n");
+        c->ev->ev = ub_event_new(base->eb->base, c->fd, evbits,
+            comm_point_udp_callback, c);
+    }
+
+	if(c->ev->ev == NULL) {
+		log_err("could not baseset udp event");
+		comm_point_delete(c);
+		return NULL;
+	}
+	if(fd!=-1 && ub_event_add(c->ev->ev, c->timeout) != 0 ) {
+		log_err("could not add udp event");
+		comm_point_delete(c);
+		return NULL;
+	}
+	c->event_added = 1;
+	return c;
+}
+
+struct comm_point*
+comm_point_create_coap(struct comm_base *base, int fd, sldns_buffer* buffer,
+	int pp2_enabled, comm_point_callback_type* callback,
+	void* callback_arg, struct unbound_socket* socket, enum listen_type port_type,
+    coap_context_t* context)
+{
+	struct comm_point* c = (struct comm_point*)calloc(1,
+		sizeof(struct comm_point));
+	short evbits;
+	if(!c)
+		return NULL;
+	c->ev = (struct internal_event*)calloc(1,
+		sizeof(struct internal_event));
+	if(!c->ev) {
+		free(c);
+		return NULL;
+	}
+	c->ev->base = base;
+	c->fd = fd;
+	c->buffer = buffer;
+	c->timeout = NULL;
+	c->tcp_is_reading = 0;
+	c->tcp_byte_count = 0;
+	c->tcp_parent = NULL;
+	c->max_tcp_count = 0;
+	c->cur_tcp_count = 0;
+	c->tcp_handlers = NULL;
+	c->tcp_free = NULL;
+	c->type = comm_udp;
+	c->tcp_do_close = 0;
+	c->do_not_close = 0;
+	c->tcp_do_toggle_rw = 0;
+	c->tcp_check_nb_connect = 0;
+#ifdef USE_MSG_FASTOPEN
+	c->tcp_do_fastopen = 0;
+#endif
+#ifdef USE_DNSCRYPT
+	c->dnscrypt = 0;
+	c->dnscrypt_buffer = buffer;
+#endif
+	c->inuse = 0;
+	c->callback = callback;
+	c->cb_arg = callback_arg;
+	c->socket = socket;
+	c->pp2_enabled = pp2_enabled;
+	c->pp2_header_state = pp2_header_none;
+    c->context = context;
+	evbits = UB_EV_READ | UB_EV_PERSIST;
+	/* ub_event stuff */
+	// printf("[netevent.c // comm_point_create_udp] Create Event for UDP Com Point\n");
+    if (port_type == listen_type_coap) {
+	    // printf("[netevent.c // comm_point_create_udp] Create Event for UDP/COAP Com Point\n");
+	    c->ev->ev = ub_event_new(base->eb->base, c->fd, evbits,
+		    comm_point_oscore_callback, c);
+    } else {
+	    // printf("[netevent.c // comm_point_create_udp] Create Event for UDP(normal) Com Point\n");
         c->ev->ev = ub_event_new(base->eb->base, c->fd, evbits,
             comm_point_udp_callback, c);
     }
@@ -4802,7 +5161,21 @@ comm_point_delete(struct comm_point* c)
 void
 comm_point_send_reply(struct comm_reply *repinfo)
 {
+    printf("-------------------------------------------------------------------------------------------------------------------------------------------------\n");
 	struct sldns_buffer* buffer;
+
+    char ipstr[INET6_ADDRSTRLEN]; // Groß genug für IPv6
+    struct sockaddr_in *addr_in = (struct sockaddr_in *)&repinfo->client_addr;
+
+    // Umwandlung der IP-Adresse in einen lesbaren String
+    inet_ntop(AF_INET, &(addr_in->sin_addr), ipstr, INET_ADDRSTRLEN);
+
+    // Umwandlung des Ports von Netzwerk- in Host-Byte-Reihenfolge
+    unsigned int port = ntohs(addr_in->sin_port);
+
+    // Ausgabe der IP-Adresse und des Ports
+    printf("IPv4 Address: %s, Port: %u\n", ipstr, port);
+    printf("%d\n", repinfo->c->type);
 	log_assert(repinfo && repinfo->c);
 #ifdef USE_DNSCRYPT
 	buffer = repinfo->c->dnscrypt_buffer;
@@ -4812,55 +5185,68 @@ comm_point_send_reply(struct comm_reply *repinfo)
 #else
 	buffer = repinfo->c->buffer;
 #endif
-	if(repinfo->c->type == comm_udp) {
-		if(repinfo->srctype)
-			comm_point_send_udp_msg_if(repinfo->c, buffer,
+    if(repinfo->c->context != NULL) {
+            if (repinfo->session != NULL) {
+                printf("Session is not NULL\n");
+            } else {
+                printf("Session is NULL\n");
+            }
+            printf("[netevent.c // comm_point_send_reply()] Call comm_point_send_coap_msg() func. (send reply - not from cache)\n");
+			comm_point_send_coap_msg(repinfo->c, buffer,
 				(struct sockaddr*)&repinfo->remote_addr,
-				repinfo->remote_addrlen, repinfo);
-		else
-			comm_point_send_udp_msg(repinfo->c, buffer,
-				(struct sockaddr*)&repinfo->remote_addr,
-				repinfo->remote_addrlen, 0);
+				repinfo->remote_addrlen, 0, repinfo->session, repinfo->response, repinfo->pdu_wrapper);
+    } else {
+        if(repinfo->c->type == comm_udp) {
+            if(repinfo->srctype)
+                comm_point_send_udp_msg_if(repinfo->c, buffer,
+                        (struct sockaddr*)&repinfo->remote_addr,
+                        repinfo->remote_addrlen, repinfo);
+            else
+                printf("[netevent.c // comm_point_send_reply()] Call comm_point_send_upd_msg() func. (send reply - not from cache)\n");
+            comm_point_send_udp_msg(repinfo->c, buffer,
+                    (struct sockaddr*)&repinfo->remote_addr,
+                    repinfo->remote_addrlen, 0);
 #ifdef USE_DNSTAP
-		/*
-		 * sending src (client)/dst (local service) addresses over DNSTAP from udp callback
-		 */
-		if(repinfo->c->dtenv != NULL && repinfo->c->dtenv->log_client_response_messages) {
-			log_addr(VERB_ALGO, "from local addr", (void*)repinfo->c->socket->addr->ai_addr, repinfo->c->socket->addr->ai_addrlen);
-			log_addr(VERB_ALGO, "response to client", &repinfo->client_addr, repinfo->client_addrlen);
-			dt_msg_send_client_response(repinfo->c->dtenv, &repinfo->client_addr, (void*)repinfo->c->socket->addr->ai_addr, repinfo->c->type, repinfo->c->ssl, repinfo->c->buffer);
-		}
+            /*
+             * sending src (client)/dst (local service) addresses over DNSTAP from udp callback
+             */
+            if(repinfo->c->dtenv != NULL && repinfo->c->dtenv->log_client_response_messages) {
+                log_addr(VERB_ALGO, "from local addr", (void*)repinfo->c->socket->addr->ai_addr, repinfo->c->socket->addr->ai_addrlen);
+                log_addr(VERB_ALGO, "response to client", &repinfo->client_addr, repinfo->client_addrlen);
+                dt_msg_send_client_response(repinfo->c->dtenv, &repinfo->client_addr, (void*)repinfo->c->socket->addr->ai_addr, repinfo->c->type, repinfo->c->ssl, repinfo->c->buffer);
+            }
 #endif
-	} else {
+        } else {
 #ifdef USE_DNSTAP
-		/*
-		 * sending src (client)/dst (local service) addresses over DNSTAP from TCP callback
-		 */
-		if(repinfo->c->tcp_parent->dtenv != NULL && repinfo->c->tcp_parent->dtenv->log_client_response_messages) {
-			log_addr(VERB_ALGO, "from local addr", (void*)repinfo->c->socket->addr->ai_addr, repinfo->c->socket->addr->ai_addrlen);
-			log_addr(VERB_ALGO, "response to client", &repinfo->client_addr, repinfo->client_addrlen);
-			dt_msg_send_client_response(repinfo->c->tcp_parent->dtenv, &repinfo->client_addr, (void*)repinfo->c->socket->addr->ai_addr, repinfo->c->type, repinfo->c->ssl,
-				( repinfo->c->tcp_req_info? repinfo->c->tcp_req_info->spool_buffer: repinfo->c->buffer ));
-		}
+            /*
+             * sending src (client)/dst (local service) addresses over DNSTAP from TCP callback
+             */
+            if(repinfo->c->tcp_parent->dtenv != NULL && repinfo->c->tcp_parent->dtenv->log_client_response_messages) {
+                log_addr(VERB_ALGO, "from local addr", (void*)repinfo->c->socket->addr->ai_addr, repinfo->c->socket->addr->ai_addrlen);
+                log_addr(VERB_ALGO, "response to client", &repinfo->client_addr, repinfo->client_addrlen);
+                dt_msg_send_client_response(repinfo->c->tcp_parent->dtenv, &repinfo->client_addr, (void*)repinfo->c->socket->addr->ai_addr, repinfo->c->type, repinfo->c->ssl,
+                        ( repinfo->c->tcp_req_info? repinfo->c->tcp_req_info->spool_buffer: repinfo->c->buffer ));
+            }
 #endif
-		if(repinfo->c->tcp_req_info) {
-			tcp_req_info_send_reply(repinfo->c->tcp_req_info);
-		} else if(repinfo->c->use_h2) {
-			if(!http2_submit_dns_response(repinfo->c->h2_session)) {
-				comm_point_drop_reply(repinfo);
-				return;
-			}
-			repinfo->c->h2_stream = NULL;
-			repinfo->c->tcp_is_reading = 0;
-			comm_point_stop_listening(repinfo->c);
-			comm_point_start_listening(repinfo->c, -1,
-				adjusted_tcp_timeout(repinfo->c));
-			return;
-		} else {
-			comm_point_start_listening(repinfo->c, -1,
-				adjusted_tcp_timeout(repinfo->c));
-		}
-	}
+            if(repinfo->c->tcp_req_info) {
+                tcp_req_info_send_reply(repinfo->c->tcp_req_info);
+            } else if(repinfo->c->use_h2) {
+                if(!http2_submit_dns_response(repinfo->c->h2_session)) {
+                    comm_point_drop_reply(repinfo);
+                    return;
+                }
+                repinfo->c->h2_stream = NULL;
+                repinfo->c->tcp_is_reading = 0;
+                comm_point_stop_listening(repinfo->c);
+                comm_point_start_listening(repinfo->c, -1,
+                        adjusted_tcp_timeout(repinfo->c));
+                return;
+            } else {
+                comm_point_start_listening(repinfo->c, -1,
+                        adjusted_tcp_timeout(repinfo->c));
+            }
+        }
+    }
 }
 
 void

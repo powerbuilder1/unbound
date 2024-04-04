@@ -123,6 +123,15 @@ struct comm_base {
 	void* cb_arg;
 };
 
+struct pdu_response_data {
+    coap_pdu_type_t type;
+    coap_pdu_code_t code;
+    coap_mid_t mid;
+    struct coap_bin_const_t* token;
+    struct coap_optlist_t* options;
+};
+
+
 /**
  * Reply information for a communication point.
  */
@@ -165,6 +174,12 @@ struct comm_reply {
 	struct sockaddr_storage client_addr;
 	/** the original address length */
 	socklen_t client_addrlen;
+
+    coap_session_t* session;
+
+    coap_pdu_t* response;
+
+    struct pdu_response_data* pdu_wrapper;
 };
 
 /**
@@ -283,7 +298,7 @@ struct comm_point {
 		/** AF_UNIX socket - for internal commands. */
 		comm_local,
 		/** raw - not DNS format - for pipe readers and writers */
-		comm_raw
+		comm_raw,
 	}
 		/** variable with type of socket, UDP,TCP-accept,TCP,pipe */
 		type;
@@ -418,6 +433,10 @@ struct comm_point {
     coap_context_t* context;
 };
 
+void sockaddr_to_coap_address(struct sockaddr *addr, coap_address_t *coap_addr);
+
+static coap_session_t* setup_session (coap_context_t* context, struct in_addr ip_address);
+
 /**
  * Structure only for making timeout events.
  */
@@ -532,6 +551,11 @@ struct ub_event_base* comm_base_internal(struct comm_base* b);
  * Sets timeout to NULL. Turns off TCP options.
  */
 struct comm_point* comm_point_create_udp(struct comm_base* base,
+	int fd, struct sldns_buffer* buffer, int pp2_enabled,
+	comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket,
+    enum listen_type, coap_context_t* context);
+
+struct comm_point* comm_point_create_coap(struct comm_base* base,
 	int fd, struct sldns_buffer* buffer, int pp2_enabled,
 	comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket,
     enum listen_type, coap_context_t* context);
@@ -678,6 +702,9 @@ void comm_point_drop_reply(struct comm_reply* repinfo);
  */
 int comm_point_send_udp_msg(struct comm_point* c, struct sldns_buffer* packet,
 	struct sockaddr* addr, socklen_t addrlen,int is_connected);
+
+int comm_point_send_coap_msg(struct comm_point* c, struct sldns_buffer* packet,
+	struct sockaddr* addr, socklen_t addrlen,int is_connected, coap_session_t* session, coap_pdu_t* response, struct pdu_response_data* pdu_wrapper);
 
 /**
  * Stop listening for input on the commpoint. No callbacks will happen.
