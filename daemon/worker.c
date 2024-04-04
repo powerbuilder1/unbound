@@ -248,6 +248,7 @@ worker_handle_service_reply(struct comm_point* c, void* arg, int error,
 
 	verbose(VERB_ALGO, "worker svcd callback for qstate %p", e->qstate);
 	if(error != 0) {
+        printf("6\n");
 		mesh_report_reply(worker->env.mesh, e, reply_info, error);
 		worker_mem_report(worker, sq);
 		return 0;
@@ -260,11 +261,13 @@ worker_handle_service_reply(struct comm_point* c, void* arg, int error,
 		/* error becomes timeout for the module as if this reply
 		 * never arrived. */
 		verbose(VERB_ALGO, "worker: bad reply handled as timeout");
+        printf("1\n");
 		mesh_report_reply(worker->env.mesh, e, reply_info,
 			NETEVENT_TIMEOUT);
 		worker_mem_report(worker, sq);
 		return 0;
 	}
+    printf("[worker.c // worker_handle_service_reply()] Call mesh_report_reply func.\n");
 	mesh_report_reply(worker->env.mesh, e, reply_info, NETEVENT_NOERROR);
 	worker_mem_report(worker, sq);
 	return 0;
@@ -1401,6 +1404,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 	if((error != NETEVENT_NOERROR && error != NETEVENT_DONE)|| !repinfo) {
 		/* some bad tcp query DNS formats give these error calls */
 		verbose(VERB_ALGO, "handle request called with err=%d", error);
+        printf("Failed13\n");
 		return 0;
 	}
 
@@ -1413,11 +1417,10 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 			(long long)(worker->env.cfg->sock_queue_timeout * 1000000)) {
 			/* count and drop queries that were sitting in the socket queue too long */
 			worker->stats.num_queries_timed_out++;
+            printf("Failed14\n");
 			return 0;
 		}
 	}
-
-    printf("1\n");
 
 #ifdef USE_DNSCRYPT
 	repinfo->max_udp_size = worker->daemon->cfg->max_udp_size;
@@ -1464,7 +1467,6 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 		worker->stats.num_query_dnscrypt_crypted++;
 	}
 #endif
-    printf("2\n");
 #ifdef USE_DNSTAP
 	/*
 	 * sending src (client)/dst (local service) addresses over DNSTAP from incoming request handler
@@ -1503,6 +1505,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 			return 1;
 		}
 		comm_point_drop_reply(repinfo);
+        printf("FAIL1\n");
 		return 0;
 	}
 
@@ -1518,6 +1521,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 			repinfo->client_addrlen, 0, c->buffer)) {
 			worker->stats.num_queries_ip_ratelimited++;
 			comm_point_drop_reply(repinfo);
+            printf("FAIL2\n");
 			return 0;
 		}
 	}
@@ -1529,6 +1533,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 		memset(&qinfo, 0, sizeof(qinfo)); /* zero qinfo.qname */
 		if(worker_err_ratelimit(worker, LDNS_RCODE_FORMERR) == -1) {
 			comm_point_drop_reply(repinfo);
+            printf("FAIL3\n");
 			return 0;
 		}
 		sldns_buffer_rewind(c->buffer);
@@ -1569,6 +1574,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 			repinfo->client_addrlen);
 		if(worker_err_ratelimit(worker, LDNS_RCODE_FORMERR) == -1) {
 			comm_point_drop_reply(repinfo);
+            printf("FAIL5\n");
 			return 0;
 		}
 		sldns_buffer_rewind(c->buffer);
@@ -1632,6 +1638,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 			c->buffer)) {
 			worker->stats.num_queries_ip_ratelimited++;
 			comm_point_drop_reply(repinfo);
+            printf("FAIL6\n");
 			return 0;
 		}
 	}
@@ -1725,6 +1732,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 		regional_free_all(worker->scratchpad);
 		if(sldns_buffer_limit(c->buffer) == 0) {
 			comm_point_drop_reply(repinfo);
+            printf("FAIL7\n");
 			return 0;
 		}
 		goto send_reply;
@@ -1737,6 +1745,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 		regional_free_all(worker->scratchpad);
 		if(sldns_buffer_limit(c->buffer) == 0) {
 			comm_point_drop_reply(repinfo);
+            printf("FAIL8\n");
 			return 0;
 		}
 		goto send_reply;
@@ -1747,6 +1756,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 		regional_free_all(worker->scratchpad);
 		if(sldns_buffer_limit(c->buffer) == 0) {
 			comm_point_drop_reply(repinfo);
+            printf("FAIL9\n");
 			return 0;
 		}
 		/* set RA for everyone that can have recursion (based on
@@ -1806,6 +1816,7 @@ worker_handle_request(struct comm_point* c, void* arg, int error,
 			d->count != 1) {
 			log_err("assumption failure: unexpected local alias");
 			regional_free_all(worker->scratchpad);
+            printf("FAIL10\n");
 			return 0; /* drop it */
 		}
 		qinfo.qname = d->rr_data[0] + 2;
@@ -1940,13 +1951,16 @@ lookup_cache:
 		rpz_passthru);
 	regional_free_all(worker->scratchpad);
 	worker_mem_report(worker, NULL);
+    printf("FAIL11\n");
 	return 0;
 
 send_reply:
+    printf("Send Reply done\n");
 	rc = 1;
 send_reply_rc:
 	if(need_drop) {
 		comm_point_drop_reply(repinfo);
+        printf("Send Reply failed\n");
 		return 0;
 	}
 	if(is_expired_answer) {
@@ -1990,6 +2004,7 @@ send_reply_rc:
 	}
 #ifdef USE_DNSCRYPT
 	if(!dnsc_handle_uncurved_request(repinfo)) {
+        printf("FAIL12\n");
 		return 0;
 	}
 #endif
@@ -2244,10 +2259,12 @@ printf("\n[worker.c // worker_init()] Init worker\n");
 	server_stats_init(&worker->stats, cfg);
 	worker->alloc = worker->daemon->worker_allocs[worker->thread_num];
 	alloc_set_id_cleanup(worker->alloc, &worker_alloc_cleanup, worker);
+    printf("[worker.c // worker_init()] Add daemon env to worker env\n");
 	worker->env = *worker->daemon->env;
 	comm_base_timept(worker->base, &worker->env.now, &worker->env.now_tv);
 	worker->env.worker = worker;
 	worker->env.worker_base = worker->base;
+    printf("[worker.c // worker_init()] Add worker_send_query() func. ref. to worker (callback)\n");
 	worker->env.send_query = &worker_send_query;
 	worker->env.alloc = worker->alloc;
 	worker->env.outnet = worker->back;
@@ -2413,6 +2430,8 @@ worker_send_query(struct query_info* qinfo, uint16_t flags, int dnssec,
 	if(!e)
 		return NULL;
 	e->qstate = q;
+    printf("[worker.c // worker_send_query()] Call outnet_serviced_query() func. (has worker_handle_service_reply func. as Parameter\n");
+    printf("[worker.c // worker_send_query()] --> get serviced_query structure with worker_handle_service_reply func. as callback in service_callback list\n");
 	e->qsent = outnet_serviced_query(worker->back, qinfo, flags, dnssec,
 		want_dnssec, nocaps, check_ratelimit, tcp_upstream,
 		ssl_upstream, tls_auth_name, addr, addrlen, zone, zonelen, q,

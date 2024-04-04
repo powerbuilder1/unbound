@@ -2129,6 +2129,7 @@ select_ifport(struct outside_network* outnet, struct pending* pend,
 #else
 		my_port = portno = 0;
 #endif
+        printf("[outside_network.c // select_ifport()] Call udp_sockport() func.\n");
 		fd = udp_sockport(&pif->addr, pif->addrlen, pif->pfxlen,
 			portno, &inuse, outnet->rnd, outnet->ip_dscp);
 		if(fd == -1 && !inuse) {
@@ -2199,10 +2200,12 @@ randomize_and_send_udp(struct pending* pend, sldns_buffer* packet, int timeout)
 
 	/* select src_if, port */
 	if(addr_is_ip6(&pend->addr, pend->addrlen)) {
+        printf("[outside_network.c // randomize_and_send_udp()] Call select_ifport() func.\n");
 		if(!select_ifport(outnet, pend,
 			outnet->num_ip6, outnet->ip6_ifs))
 			return 0;
 	} else {
+        printf("[outside_network.c // randomize_and_send_udp()] Call select_ifport() func.\n");
 		if(!select_ifport(outnet, pend,
 			outnet->num_ip4, outnet->ip4_ifs))
 			return 0;
@@ -2214,7 +2217,9 @@ randomize_and_send_udp(struct pending* pend, sldns_buffer* packet, int timeout)
 		(struct sockaddr*)&pend->addr, pend->addrlen, outnet->udp_connect)) {
 		portcomm_loweruse(outnet, pend->pc);
 		return 0;
-	}
+	} else {
+        printf("send1\n");
+    }
 	outnet->num_udp_outgoing++;
 
 	/* system calls to set timeout after sending UDP to make roundtrip
@@ -2287,6 +2292,7 @@ pending_udp_query(struct serviced_query* sq, struct sldns_buffer* packet,
 	}
 	log_assert(!sq->busy);
 	sq->busy = 1;
+    printf("[outside_network.c // pending_udp_query()] Call randomize_and_send_upd() func.\n");
 	if(!randomize_and_send_udp(pend, packet, timeout)) {
 		pending_delete(sq->outnet, pend);
 		return NULL;
@@ -2583,6 +2589,7 @@ serviced_timer_cb(void* arg)
 		goto delete;
 	/* perform first network action */
 	if(outnet->do_udp && !(sq->tcp_upstream || sq->ssl_upstream)) {
+        printf("[outside_network.c // serviced_timer_cb()] Call serviced_udp_send() func.\n");
 		if(!serviced_udp_send(sq, outnet->udp_buff))
 			goto delete;
 	} else {
@@ -2653,6 +2660,7 @@ serviced_create(struct outside_network* outnet, sldns_buffer* buff, int dnssec,
 	sq->addrlen = addrlen;
 	sq->opt_list = opt_list;
 	sq->busy = 0;
+    printf("[outside_network.c // serviced_create()] Add timer to serviced_query struct. -> got callback func. serviced_timer_cb()\n");
 	sq->timer = comm_timer_create(outnet->base, serviced_timer_cb, sq);
 	if(!sq->timer) {
 		alloc_reg_release(alloc, region);
@@ -2912,6 +2920,7 @@ serviced_udp_send(struct serviced_query* sq, sldns_buffer* buff)
 	sq->last_sent_time = *sq->outnet->now_tv;
 	sq->edns_lame_known = (int)edns_lame_known;
 	verbose(VERB_ALGO, "serviced query UDP timeout=%d msec", rtt);
+    printf("[outside_network.c // serviced_udp_send()] Call pending_udp_query() func.\n");
 	sq->pending = pending_udp_query(sq, buff, rtt,
 		serviced_udp_callback, sq);
 	if(!sq->pending)
@@ -3049,6 +3058,7 @@ serviced_callbacks(struct serviced_query* sq, int error, struct comm_point* c,
 			sldns_buffer_flip(c->buffer);
 		}
 		fptr_ok(fptr_whitelist_serviced_query(p->cb));
+        printf("[outside_network.c // serviced_callbacks()] Call worker_handle_service_reply() (Callback func. from served_query struct.) func.\n");
 		(void)(*p->cb)(c, p->cb_arg, error, rep);
 	}
 	if(backup_p) {
@@ -3154,6 +3164,7 @@ serviced_tcp_callback(struct comm_point* c, void* arg, int error,
 	}
 	memcpy(&rep->remote_addr, &sq->addr, sq->addrlen);
 	rep->remote_addrlen = sq->addrlen;
+    printf("sc2\n");
 	serviced_callbacks(sq, error, c, rep);
 	return 0;
 }
@@ -3174,6 +3185,7 @@ serviced_tcp_initiate(struct serviced_query* sq, sldns_buffer* buff)
 		/* delete from tree so that a retry by above layer does not
 		 * clash with this entry */
 		verbose(VERB_ALGO, "serviced_tcp_initiate: failed to send tcp query");
+        printf("sc3\n");
 		serviced_callbacks(sq, NETEVENT_CLOSED, NULL, NULL);
 	}
 }
@@ -3267,6 +3279,7 @@ serviced_udp_callback(struct comm_point* c, void* arg, int error,
 			log_name_addr(VERB_ALGO, "try edns1xx0", sq->qbuf+10,
 				&sq->addr, sq->addrlen);
 			if(!serviced_udp_send(sq, c->buffer)) {
+                printf("sc4\n");
 				serviced_callbacks(sq, NETEVENT_CLOSED, c, rep);
 			}
 			return 0;
@@ -3284,6 +3297,7 @@ serviced_udp_callback(struct comm_point* c, void* arg, int error,
 			log_name_addr(VERB_ALGO, "retry query", sq->qbuf+10,
 				&sq->addr, sq->addrlen);
 			if(!serviced_udp_send(sq, c->buffer)) {
+                printf("sc5\n");
 				serviced_callbacks(sq, NETEVENT_CLOSED, c, rep);
 			}
 			return 0;
@@ -3291,6 +3305,7 @@ serviced_udp_callback(struct comm_point* c, void* arg, int error,
 	}
 	if(error != NETEVENT_NOERROR) {
 		/* udp returns error (due to no ID or interface available) */
+        printf("sc6\n");
 		serviced_callbacks(sq, error, c, rep);
 		return 0;
 	}
@@ -3322,6 +3337,7 @@ serviced_udp_callback(struct comm_point* c, void* arg, int error,
 		sq->status = serviced_query_UDP_EDNS_fallback;
 		sq->retry = 0;
 		if(!serviced_udp_send(sq, c->buffer)) {
+            printf("sc7\n");
 			serviced_callbacks(sq, NETEVENT_CLOSED, c, rep);
 		}
 		return 0;
@@ -3390,6 +3406,7 @@ serviced_udp_callback(struct comm_point* c, void* arg, int error,
 		return 0;
 	}
 	/* yay! an answer */
+    printf("[outside_network.c // serviced_udp_callback()] Call serviced_callbacks() func.\n");
 	serviced_callbacks(sq, error, c, rep);
 	return 0;
 }
@@ -3472,6 +3489,7 @@ outnet_serviced_query(struct outside_network* outnet,
 			}
 		}
 		/* make new serviced query entry */
+        printf("[outside_network.c // outnet_serviced_query()] Call serviced_create() func.\n");
 		sq = serviced_create(outnet, buff, dnssec, want_dnssec, nocaps,
 			tcp_upstream, ssl_upstream, tls_auth_name, addr,
 			addrlen, zone, zonelen, (int)qinfo->qtype,
@@ -3510,6 +3528,7 @@ outnet_serviced_query(struct outside_network* outnet,
 		}
 	}
 	/* add callback to list of callbacks */
+    printf("[outside_network.c // outnet_serviced_query()] Add worker_handle_service_reply func. (callback) as service_callback to service_query structure\n");
 	cb->cb = callback;
 	cb->cb_arg = callback_arg;
 	cb->next = sq->cblist;

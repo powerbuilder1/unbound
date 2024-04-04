@@ -534,6 +534,7 @@ void mesh_new_client(struct mesh_area* mesh, struct query_info* qinfo,
 		}
 	}
 	if(added)
+        printf("1\n");
 		mesh_run(mesh, s, module_event_new, NULL);
 	return;
 
@@ -626,6 +627,7 @@ mesh_new_callback(struct mesh_area* mesh, struct query_info* qinfo,
 	}
 	mesh->num_reply_addrs++;
 	if(added)
+        printf("2\n");
 		mesh_run(mesh, s, module_event_new, NULL);
 	return 1;
 }
@@ -705,6 +707,7 @@ static void mesh_schedule_prefetch(struct mesh_area* mesh,
 		return;
 	}
 
+    printf("3\n");
 	mesh_run(mesh, s, module_event_new, NULL);
 }
 
@@ -819,6 +822,7 @@ void mesh_report_reply(struct mesh_area* mesh, struct outbound_entry* e,
 		if(what == NETEVENT_CAPSFAIL)
 			event = module_event_capsfail;
 	}
+    printf("[mesh.c // mesh_report_reply()] Call mesh_run() func.\n");
 	mesh_run(mesh, e->qstate->mesh_info, event, e);
 }
 
@@ -1348,6 +1352,7 @@ mesh_send_reply(struct mesh_state* m, int rcode, struct reply_info* rep,
 		sldns_buffer_write_at(r_buffer, 12, r->qname,
 			m->s.qinfo.qname_len);
 		m->reply_list = NULL;
+        printf("[mesh.c // mesh_send_reply()] SEND MESH REPLAY 1\n");
 		comm_point_send_reply(&r->query_reply);
 		m->reply_list = rlist;
 	} else if(rcode) {
@@ -1372,6 +1377,7 @@ mesh_send_reply(struct mesh_state* m, int rcode, struct reply_info* rep,
 		error_encode(r_buffer, rcode, &m->s.qinfo, r->qid,
 			r->qflags, &r->edns);
 		m->reply_list = NULL;
+        printf("[mesh.c // mesh_send_reply()] Call comm_point_send_reply() func.\n");
 		comm_point_send_reply(&r->query_reply);
 		m->reply_list = rlist;
 	} else {
@@ -1410,6 +1416,7 @@ mesh_send_reply(struct mesh_state* m, int rcode, struct reply_info* rep,
 				&m->s.qinfo, r->qid, r->qflags, &r->edns);
 		}
 		m->reply_list = NULL;
+        printf("[mesh.c // mesh_send_reply()] SEND MESH REPLAY 3\n");
 		comm_point_send_reply(&r->query_reply);
 		m->reply_list = rlist;
 	}
@@ -1502,6 +1509,7 @@ void mesh_query_done(struct mesh_state* mstate)
 				r_buffer = r->query_reply.c->tcp_req_info->spool_buffer;
 				prev_buffer = NULL;
 			}
+            printf("[mesh.c // mesh_query_done()] Call mesh_send_reply() func.\n");
 			mesh_send_reply(mstate, mstate->s.return_rcode, rep,
 				r, r_buffer, prev, prev_buffer);
 			if(r->query_reply.c->tcp_req_info) {
@@ -1795,6 +1803,7 @@ mesh_continue(struct mesh_area* mesh, struct mesh_state* mstate,
 		mstate->s.return_rcode = LDNS_RCODE_SERVFAIL;
 	}
 	if(s == module_error) {
+        printf("[mesh.c // mesh_continue()] Call mesh_query_done() func. 1\n");
 		mesh_query_done(mstate);
 		mesh_walk_supers(mesh, mstate);
 		mesh_state_delete(&mstate->s);
@@ -1818,6 +1827,8 @@ mesh_continue(struct mesh_area* mesh, struct mesh_state* mstate,
 #endif
 				memset(&addr, 0, sizeof(addr));
 
+
+            printf("[mesh.c // mesh_continue()] Call mesh_query_done() func.\n");
 			mesh_query_done(mstate);
 			mesh_walk_supers(mesh, mstate);
 
@@ -1879,6 +1890,7 @@ void mesh_run(struct mesh_area* mesh, struct mesh_state* mstate,
 		verbose(VERB_ALGO, "mesh_run: %s module exit state is %s",
 			mesh->mods.mod[mstate->s.curmod]->name, strextstate(s));
 		e = NULL;
+        printf("[mesh.c // mesh_run()] Call mesh_continue() func.\n");
 		if(mesh_continue(mesh, mstate, s, &ev))
 			continue;
 
