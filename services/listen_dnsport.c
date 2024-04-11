@@ -83,9 +83,9 @@
 #ifdef HAVE_LINUX_NET_TSTAMP_H
 #include <linux/net_tstamp.h>
 #endif
-#include <coap3/coap.h>
 #include <sldns/wire2str.h>
 #include "util/ub_event.h"
+#include <coap3/coap.h>
 
 /** number of queued TCP connections for listen() */
 #define TCP_BACKLOG 256
@@ -280,9 +280,22 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
         struct sockaddr_in *addr_in = (struct sockaddr_in *)addr;
         port = ntohs(addr_in->sin_port);
         printf("[listen_dnsport.c // create_udp_sock()]: Create COAP Endpoint + Context + Resource\n");
-        coap_endpoint_t* endpoint;
-        setup_server_context(context, &endpoint, port);
-        s = coap_context_get_coap_fd(*context);
+        coap_endpoint_t* endpoint_unencrypted;
+        coap_endpoint_t* endpoint_dtls;
+        static const uint8_t psk_key[] = "psk";
+        static const uint8_t psk_identity[] = "client";
+        static coap_dtls_spsk_info_t psk_info = {
+            .hint.s = psk_identity,
+            .hint.length = sizeof(psk_identity) - 1,
+            .key.s = psk_key,
+            .key.length = sizeof(psk_key) - 1
+        };
+        setup_server_context(context, &psk_info);
+        setup_endpoint(*context, &endpoint_unencrypted, COAP_DEFAULT_PORT, COAP_PROTO_UDP);
+        // setup_endpoint(*context, &endpoint_dtls, COAPS_DEFAULT_PORT, COAP_PROTO_DTLS);
+        // s = coap_context_get_coap_fd(*context);
+        s = coap_endpoint_get_fd(endpoint_unencrypted);
+
         return s;
     }
 #ifdef HAVE_SYSTEMD
@@ -1517,7 +1530,7 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 }
 
 void
-setup_server_context(coap_context_t** context, coap_endpoint_t** endpoint, int port) {
+old_setup_server_context(coap_context_t** context, coap_endpoint_t** endpoint, int port) {
     coap_endpoint_t* new_endpoint;
     coap_address_t listen_addr;
     coap_context_t* new_context = coap_new_context(NULL);
@@ -1535,6 +1548,31 @@ setup_server_context(coap_context_t** context, coap_endpoint_t** endpoint, int p
     printf("CONTEXT POINT AFTER INTIT: %p\n", new_context);
     *endpoint = new_endpoint;
 }
+
+void
+setup_server_context(coap_context_t** context, coap_dtls_spsk_info_t* psk_info) {
+    coap_address_t listen_addr;
+    coap_context_t* new_context = coap_new_context(NULL);
+
+    coap_context_set_block_mode(new_context,
+            COAP_BLOCK_USE_LIBCOAP | COAP_BLOCK_SINGLE_BODY);
+
+    *context = new_context;
+}
+
+void
+setup_endpoint(coap_context_t* context, coap_endpoint_t** endpoint, int port, coap_proto_t protocol_type) {
+    coap_endpoint_t* new_endpoint;
+    coap_address_t listen_addr;
+
+    coap_address_init(&listen_addr);
+    listen_addr.addr.sa.sa_family = AF_INET;
+    listen_addr.addr.sin.sin_port = htons(port);
+
+    new_endpoint = coap_new_endpoint(context, &listen_addr, protocol_type);
+    *endpoint = new_endpoint;
+}
+
 
 
 static void hnd_get_dns(coap_resource_t* resource, coap_session_t* session,
