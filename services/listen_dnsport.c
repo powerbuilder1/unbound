@@ -280,21 +280,17 @@ create_udp_sock(int family, int socktype, struct sockaddr* addr,
         struct sockaddr_in *addr_in = (struct sockaddr_in *)addr;
         port = ntohs(addr_in->sin_port);
         printf("[listen_dnsport.c // create_udp_sock()]: Create COAP Endpoint + Context + Resource\n");
+        coap_startup();
         coap_endpoint_t* endpoint_unencrypted;
         coap_endpoint_t* endpoint_dtls;
         static const uint8_t psk_key[] = "psk";
-        static const uint8_t psk_identity[] = "client";
-        static coap_dtls_spsk_info_t psk_info = {
-            .hint.s = psk_identity,
-            .hint.length = sizeof(psk_identity) - 1,
-            .key.s = psk_key,
-            .key.length = sizeof(psk_key) - 1
-        };
-        setup_server_context(context, &psk_info);
+        ssize_t psk_length = sizeof(psk_key) - 1;
+        static const char* hint = "client";
+        setup_server_context(context, psk_key, psk_length, hint);
         setup_endpoint(*context, &endpoint_unencrypted, COAP_DEFAULT_PORT, COAP_PROTO_UDP);
-        // setup_endpoint(*context, &endpoint_dtls, COAPS_DEFAULT_PORT, COAP_PROTO_DTLS);
+        setup_endpoint(*context, &endpoint_dtls, COAPS_DEFAULT_PORT, COAP_PROTO_DTLS);
         // s = coap_context_get_coap_fd(*context);
-        s = coap_endpoint_get_fd(endpoint_unencrypted);
+        s = coap_endpoint_get_fd(endpoint_dtls);
 
         return s;
     }
@@ -1550,12 +1546,26 @@ old_setup_server_context(coap_context_t** context, coap_endpoint_t** endpoint, i
 }
 
 void
-setup_server_context(coap_context_t** context, coap_dtls_spsk_info_t* psk_info) {
+setup_server_context(coap_context_t** context, const uint8_t* key, unsigned key_len, const char* hint) {
     coap_address_t listen_addr;
     coap_context_t* new_context = coap_new_context(NULL);
+    coap_dtls_spsk_t dtls_psk;
 
     coap_context_set_block_mode(new_context,
             COAP_BLOCK_USE_LIBCOAP | COAP_BLOCK_SINGLE_BODY);
+
+    memset (&dtls_psk, 0, sizeof (dtls_psk));
+
+
+     /* see coap_encryption(3) */
+     dtls_psk.version                 = COAP_DTLS_SPSK_SETUP_VERSION;
+     dtls_psk.psk_info.hint.s         = (const uint8_t*)hint;
+     dtls_psk.psk_info.hint.length    = hint ? strlen(hint) : 0;
+     dtls_psk.psk_info.key.s          = key;
+     dtls_psk.psk_info.key.length     = key_len;
+
+
+    coap_context_set_psk2(new_context, &dtls_psk);
 
     *context = new_context;
 }
