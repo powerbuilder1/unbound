@@ -83,6 +83,7 @@ struct internal_base;
 struct internal_timer; /* A sub struct of the comm_timer super struct */
 
 enum listen_type;
+enum CoAPSEcurityMode;
 
 /** callback from communication point function type */
 typedef int comm_point_callback_type(struct comm_point*, void*, int,
