@@ -478,7 +478,7 @@ char* set_ip_dscp(int socket, int addrfamily, int ds);
  */
 void verbose_print_unbound_socket(struct unbound_socket* ub_sock);
 
-void setup_server_context(coap_context_t** context, const uint8_t* key, unsigned key_len, const char* hint);
+int setup_server_context(coap_context_t** context, const uint8_t* key, unsigned key_len, const char* hint);
 
 void setup_endpoint(coap_context_t* context, coap_endpoint_t** endpoint, int port, coap_proto_t protocol_type);
 

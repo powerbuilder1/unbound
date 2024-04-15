@@ -1556,27 +1556,28 @@ ports_create_if(const char* ifname, int do_auto, int do_udp, int do_tcp,
 	return 1;
 }
 
-void
-old_setup_server_context(coap_context_t** context, coap_endpoint_t** endpoint, int port) {
-    coap_endpoint_t* new_endpoint;
-    coap_address_t listen_addr;
-    coap_context_t* new_context = coap_new_context(NULL);
+static uint8_t oscore_config[] =
+  "master_secret,hex,\"0102030405060708090a0b0c0d0e0f10\"\n"
+  "sender_id,ascii,\"server\"\n"
+  "recipient_id,ascii,\"client\"\n"
+  // "replay_window,integer,30\n"
+  // "aead_alg,integer,10\n"
+  // "hkdf_alg,integer,-10\n"
+;
+static const char* oscore_seq_save_file = "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/server.seq";
+static FILE *oscore_seq_num_fp = NULL;
 
-    coap_context_set_block_mode(new_context,
-            COAP_BLOCK_USE_LIBCOAP | COAP_BLOCK_SINGLE_BODY);
-
-    coap_address_init(&listen_addr);
-    listen_addr.addr.sa.sa_family = AF_INET;
-    listen_addr.addr.sin.sin_port = htons(port);
-
-    new_endpoint = coap_new_endpoint(new_context, &listen_addr, COAP_PROTO_UDP);
-
-    *context = new_context;
-    printf("CONTEXT POINT AFTER INTIT: %p\n", new_context);
-    *endpoint = new_endpoint;
+static int
+oscore_save_seq_num(uint64_t sender_seq_num, void *param COAP_UNUSED) {
+  if (oscore_seq_num_fp) {
+    rewind(oscore_seq_num_fp);
+    fprintf(oscore_seq_num_fp, "%lu\n", sender_seq_num);
+    fflush(oscore_seq_num_fp);
+  }
+  return 1;
 }
 
-void
+int
 setup_server_context(coap_context_t** context, const uint8_t* key, unsigned key_len, const char* hint) {
     coap_address_t listen_addr;
     coap_context_t* new_context = coap_new_context(NULL);
@@ -1585,20 +1586,41 @@ setup_server_context(coap_context_t** context, const uint8_t* key, unsigned key_
     coap_context_set_block_mode(new_context,
             COAP_BLOCK_USE_LIBCOAP | COAP_BLOCK_SINGLE_BODY);
 
+    /* setup dtls */
     memset (&dtls_psk, 0, sizeof (dtls_psk));
 
-
-     /* see coap_encryption(3) */
      dtls_psk.version                 = COAP_DTLS_SPSK_SETUP_VERSION;
      dtls_psk.psk_info.hint.s         = (const uint8_t*)hint;
      dtls_psk.psk_info.hint.length    = hint ? strlen(hint) : 0;
      dtls_psk.psk_info.key.s          = key;
      dtls_psk.psk_info.key.length     = key_len;
 
-
     coap_context_set_psk2(new_context, &dtls_psk);
 
+    /* setup oscore */
+    uint64_t start_seq_num = 0;
+    if (oscore_seq_save_file) {
+        oscore_seq_num_fp = fopen(oscore_seq_save_file, "r+");
+        if (oscore_seq_num_fp == NULL) {
+            oscore_seq_num_fp = fopen(oscore_seq_save_file, "w+");
+            if (oscore_seq_num_fp == NULL) {
+                coap_log(LOG_CRIT, "Unable to create or open OSCORE sequence number file.\n");
+                return 0;
+            }
+        }
+        fscanf(oscore_seq_num_fp, "%lu", &start_seq_num);
+    }
+    coap_str_const_t config = { sizeof(oscore_config) - 1, oscore_config };
+    coap_oscore_conf_t* oscore_conf = coap_new_oscore_conf(config, oscore_save_seq_num, NULL, start_seq_num);
+    if (!oscore_conf) {
+      coap_free_context(new_context);
+      return 0;
+    }
+    coap_context_oscore_server(new_context, oscore_conf);
+
     *context = new_context;
+
+    return 1;
 }
 
 void

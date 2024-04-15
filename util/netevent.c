@@ -634,9 +634,6 @@ comm_point_send_coap_msg(struct comm_point *c, sldns_buffer* packet,
 
     coap_add_data(own_response, sldns_buffer_remaining(packet), (const uint8_t *)sldns_buffer_begin(packet));
 
-    printf("");
-
-
 #ifdef UNBOUND_DEBUG
 	if(sldns_buffer_remaining(packet) == 0)
 		log_err("error: send empty UDP packet");
@@ -646,8 +643,8 @@ comm_point_send_coap_msg(struct comm_point *c, sldns_buffer* packet,
         printf("SEND COAP AWNSER\n");
         coap_send(session, own_response);
 	} else {
-        printf("SEND COAP AWNSER\n");
-        coap_send(session, own_response);
+        // printf("SEND COAP AWNSER\n");
+        // coap_send(session, own_response);
 	}
 	if(sent == -1) {
 		/* try again and block, waiting for IO to complete,
