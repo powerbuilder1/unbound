@@ -581,13 +581,27 @@ coap_pdu_t* create_pdu_from_response_data(coap_session_t* session, const struct 
         }
     }
 
+    printf("After create pdu from response data\n");
+
+    /*
     coap_optlist_t* opt;
     for (opt = data->options; opt; opt = opt->next) {
+        if (!opt) {
+            printf("Option is NULL\n");
+            break;
+        }
+        if (!opt->data) {
+            printf("Option data is NULL\n");
+            continue; // Skip this option or handle error as needed
+        }
         if (!coap_add_option(pdu, opt->number, opt->length, opt->data)) {
-            coap_delete_pdu(pdu); // Bei einem Fehler die PDU freigeben
+            coap_delete_pdu(pdu);
             return NULL;
         }
     }
+    */
+
+    printf("After option\n");
 
     return pdu;
 }
