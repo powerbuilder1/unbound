@@ -60,8 +60,8 @@
 #ifndef NET_EVENT_H
 #define NET_EVENT_H
 
-#include <sys/time.h>
 #include "dnscrypt/dnscrypt.h"
+#include <sys/time.h>
 #ifdef HAVE_NGHTTP2_NGHTTP2_H
 #include <nghttp2/nghttp2.h>
 #endif
@@ -87,7 +87,7 @@ enum CoAPSEcurityMode;
 
 /** callback from communication point function type */
 typedef int comm_point_callback_type(struct comm_point*, void*, int,
-	struct comm_reply*);
+    struct comm_reply*);
 
 /** to pass no_error to callback function */
 #define NETEVENT_NOERROR 0
@@ -112,16 +112,16 @@ typedef int comm_point_callback_type(struct comm_point*, void*, int,
  * A communication point dispatcher. Thread specific.
  */
 struct comm_base {
-	/** behind the scenes structure. with say libevent info. alloced */
-	struct internal_base* eb;
-	/** callback to stop listening on accept sockets,
-	 * performed when accept() will not function properly */
-	void (*stop_accept)(void*);
-	/** callback to start listening on accept sockets, performed
-	 * after stop_accept() then a timeout has passed. */
-	void (*start_accept)(void*);
-	/** user argument for stop_accept and start_accept functions */
-	void* cb_arg;
+    /** behind the scenes structure. with say libevent info. alloced */
+    struct internal_base* eb;
+    /** callback to stop listening on accept sockets,
+     * performed when accept() will not function properly */
+    void (*stop_accept)(void*);
+    /** callback to start listening on accept sockets, performed
+     * after stop_accept() then a timeout has passed. */
+    void (*start_accept)(void*);
+    /** user argument for stop_accept and start_accept functions */
+    void* cb_arg;
 };
 
 struct pdu_response_data {
@@ -132,55 +132,63 @@ struct pdu_response_data {
     struct coap_optlist_t* options;
 };
 
+typedef struct {
+    double t_up_in_h;
+    double t_down_out_h;
+    double t_up_in_c;
+    double t_down_out_c;
+} DNSMeasurement;
 
 /**
  * Reply information for a communication point.
  */
 struct comm_reply {
-	/** the comm_point with fd to send reply on to. */
-	struct comm_point* c;
-	/** the address (for UDP based communication) */
-	struct sockaddr_storage remote_addr;
-	/** length of address */
-	socklen_t remote_addrlen;
-	/** return type 0 (none), 4(IP4), 6(IP6)
-	 *  used only with listen_type_udp_ancil* */
-	int srctype;
-	/* DnsCrypt context */
+    /** the comm_point with fd to send reply on to. */
+    struct comm_point* c;
+    /** the address (for UDP based communication) */
+    struct sockaddr_storage remote_addr;
+    /** length of address */
+    socklen_t remote_addrlen;
+    /** return type 0 (none), 4(IP4), 6(IP6)
+     *  used only with listen_type_udp_ancil* */
+    int srctype;
+    /* DnsCrypt context */
 #ifdef USE_DNSCRYPT
-	uint8_t client_nonce[crypto_box_HALF_NONCEBYTES];
-	uint8_t nmkey[crypto_box_BEFORENMBYTES];
-	const dnsccert *dnsc_cert;
-	int is_dnscrypted;
+    uint8_t client_nonce[crypto_box_HALF_NONCEBYTES];
+    uint8_t nmkey[crypto_box_BEFORENMBYTES];
+    const dnsccert* dnsc_cert;
+    int is_dnscrypted;
 #endif
-	/** the return source interface data */
-	union {
+    /** the return source interface data */
+    union {
 #ifdef IPV6_PKTINFO
-		struct in6_pktinfo v6info;
+        struct in6_pktinfo v6info;
 #endif
 #ifdef IP_PKTINFO
-		struct in_pktinfo v4info;
+        struct in_pktinfo v4info;
 #elif defined(IP_RECVDSTADDR)
-		struct in_addr v4addr;
+        struct in_addr v4addr;
 #endif
-	}
-		/** variable with return source data */
-		pktinfo;
-	/** max udp size for udp packets */
-	size_t max_udp_size;
-	/* if set, the request came through a proxy */
-	int is_proxied;
-	/** the client address
-	 *  the same as remote_addr if not proxied */
-	struct sockaddr_storage client_addr;
-	/** the original address length */
-	socklen_t client_addrlen;
+    }
+    /** variable with return source data */
+    pktinfo;
+    /** max udp size for udp packets */
+    size_t max_udp_size;
+    /* if set, the request came through a proxy */
+    int is_proxied;
+    /** the client address
+     *  the same as remote_addr if not proxied */
+    struct sockaddr_storage client_addr;
+    /** the original address length */
+    socklen_t client_addrlen;
 
     coap_session_t* session;
 
     coap_pdu_t* response;
 
     struct pdu_response_data* pdu_wrapper;
+
+    DNSMeasurement* measurements;
 };
 
 /**
@@ -193,280 +201,280 @@ struct comm_reply {
  *    tcp behind: write done, read done, then called. No send after.
  */
 struct comm_point {
-	/** behind the scenes structure, with say libevent info. alloced. */
-	struct internal_event* ev;
-	/** if the event is added or not */
-	int event_added;
+    /** behind the scenes structure, with say libevent info. alloced. */
+    struct internal_event* ev;
+    /** if the event is added or not */
+    int event_added;
 
-	struct unbound_socket* socket;
+    struct unbound_socket* socket;
 
-	/** file descriptor for communication point */
-	int fd;
+    /** file descriptor for communication point */
+    int fd;
 
-	/** timeout (NULL if it does not). Malloced. */
-	struct timeval* timeout;
+    /** timeout (NULL if it does not). Malloced. */
+    struct timeval* timeout;
 
-	/** buffer pointer. Either to perthread, or own buffer or NULL */
-	struct sldns_buffer* buffer;
+    /** buffer pointer. Either to perthread, or own buffer or NULL */
+    struct sldns_buffer* buffer;
 
-	/* -------- TCP Handler -------- */
-	/** Read/Write state for TCP */
-	int tcp_is_reading;
-	/** The current read/write count for TCP */
-	size_t tcp_byte_count;
-	/** parent communication point (for TCP sockets) */
-	struct comm_point* tcp_parent;
-	/** sockaddr from peer, for TCP handlers */
-	struct comm_reply repinfo;
+    /* -------- TCP Handler -------- */
+    /** Read/Write state for TCP */
+    int tcp_is_reading;
+    /** The current read/write count for TCP */
+    size_t tcp_byte_count;
+    /** parent communication point (for TCP sockets) */
+    struct comm_point* tcp_parent;
+    /** sockaddr from peer, for TCP handlers */
+    struct comm_reply repinfo;
 
-	/* -------- TCP Accept -------- */
-	/** the number of TCP handlers for this tcp-accept socket */
-	int max_tcp_count;
-	/** current number of tcp handler in-use for this accept socket */
-	int cur_tcp_count;
-	/** malloced array of tcp handlers for a tcp-accept,
-	    of size max_tcp_count. */
-	struct comm_point** tcp_handlers;
-	/** linked list of free tcp_handlers to use for new queries.
-	    For tcp_accept the first entry, for tcp_handlers the next one. */
-	struct comm_point* tcp_free;
+    /* -------- TCP Accept -------- */
+    /** the number of TCP handlers for this tcp-accept socket */
+    int max_tcp_count;
+    /** current number of tcp handler in-use for this accept socket */
+    int cur_tcp_count;
+    /** malloced array of tcp handlers for a tcp-accept,
+        of size max_tcp_count. */
+    struct comm_point** tcp_handlers;
+    /** linked list of free tcp_handlers to use for new queries.
+        For tcp_accept the first entry, for tcp_handlers the next one. */
+    struct comm_point* tcp_free;
 
-	/* -------- SSL TCP DNS ------- */
-	/** the SSL object with rw bio (owned) or for commaccept ctx ref */
-	void* ssl;
-	/** handshake state for init and renegotiate */
-	enum {
-		/** no handshake, it has been done */
-		comm_ssl_shake_none = 0,
-		/** ssl initial handshake wants to read */
-		comm_ssl_shake_read,
-		/** ssl initial handshake wants to write */
-		comm_ssl_shake_write,
-		/** ssl_write wants to read */
-		comm_ssl_shake_hs_read,
-		/** ssl_read wants to write */
-		comm_ssl_shake_hs_write
-	} ssl_shake_state;
+    /* -------- SSL TCP DNS ------- */
+    /** the SSL object with rw bio (owned) or for commaccept ctx ref */
+    void* ssl;
+    /** handshake state for init and renegotiate */
+    enum {
+        /** no handshake, it has been done */
+        comm_ssl_shake_none = 0,
+        /** ssl initial handshake wants to read */
+        comm_ssl_shake_read,
+        /** ssl initial handshake wants to write */
+        comm_ssl_shake_write,
+        /** ssl_write wants to read */
+        comm_ssl_shake_hs_read,
+        /** ssl_read wants to write */
+        comm_ssl_shake_hs_write
+    } ssl_shake_state;
 
-	/* -------- HTTP ------- */
-	/** Do not allow connection to use HTTP version lower than this. 0=no
-	 * minimum. */
-	enum {
-		http_version_none = 0,
-		http_version_2 = 2
-	} http_min_version;
-	/** http endpoint */
-	char* http_endpoint;
-	/* -------- HTTP/1.1 ------- */
-	/** Currently reading in http headers */
-	int http_in_headers;
-	/** Currently reading in chunk headers, 0=not, 1=firstline, 2=unused
-	 * (more lines), 3=trailer headers after chunk */
-	int http_in_chunk_headers;
-	/** chunked transfer */
-	int http_is_chunked;
-	/** http temp buffer (shared buffer for temporary work) */
-	struct sldns_buffer* http_temp;
-	/** http stored content in buffer */
-	size_t http_stored;
-	/* -------- HTTP/2 ------- */
-	/** http2 session */
-	struct http2_session* h2_session;
-	/** set to 1 if h2 is negotiated to be used (using alpn) */
-	int use_h2;
-	/** stream currently being handled */
-	struct http2_stream* h2_stream;
-	/** maximum allowed query buffer size, per stream */
-	size_t http2_stream_max_qbuffer_size;
-	/** maximum number of HTTP/2 streams per connection. Send in HTTP/2
-	 * SETTINGS frame. */
-	uint32_t http2_max_streams;
+    /* -------- HTTP ------- */
+    /** Do not allow connection to use HTTP version lower than this. 0=no
+     * minimum. */
+    enum {
+        http_version_none = 0,
+        http_version_2 = 2
+    } http_min_version;
+    /** http endpoint */
+    char* http_endpoint;
+    /* -------- HTTP/1.1 ------- */
+    /** Currently reading in http headers */
+    int http_in_headers;
+    /** Currently reading in chunk headers, 0=not, 1=firstline, 2=unused
+     * (more lines), 3=trailer headers after chunk */
+    int http_in_chunk_headers;
+    /** chunked transfer */
+    int http_is_chunked;
+    /** http temp buffer (shared buffer for temporary work) */
+    struct sldns_buffer* http_temp;
+    /** http stored content in buffer */
+    size_t http_stored;
+    /* -------- HTTP/2 ------- */
+    /** http2 session */
+    struct http2_session* h2_session;
+    /** set to 1 if h2 is negotiated to be used (using alpn) */
+    int use_h2;
+    /** stream currently being handled */
+    struct http2_stream* h2_stream;
+    /** maximum allowed query buffer size, per stream */
+    size_t http2_stream_max_qbuffer_size;
+    /** maximum number of HTTP/2 streams per connection. Send in HTTP/2
+     * SETTINGS frame. */
+    uint32_t http2_max_streams;
 
-	/* -------- dnstap ------- */
-	/** the dnstap environment */
-	struct dt_env* dtenv;
+    /* -------- dnstap ------- */
+    /** the dnstap environment */
+    struct dt_env* dtenv;
 
-	/** is this a UDP, TCP-accept or TCP socket. */
-	enum comm_point_type {
-		/** UDP socket - handle datagrams. */
-		comm_udp,
-		/** TCP accept socket - only creates handlers if readable. */
-		comm_tcp_accept,
-		/** TCP handler socket - handle byteperbyte readwrite. */
-		comm_tcp,
-		/** HTTP handler socket */
-		comm_http,
-		/** AF_UNIX socket - for internal commands. */
-		comm_local,
-		/** raw - not DNS format - for pipe readers and writers */
-		comm_raw,
-	}
-		/** variable with type of socket, UDP,TCP-accept,TCP,pipe */
-		type;
+    /** is this a UDP, TCP-accept or TCP socket. */
+    enum comm_point_type {
+        /** UDP socket - handle datagrams. */
+        comm_udp,
+        /** TCP accept socket - only creates handlers if readable. */
+        comm_tcp_accept,
+        /** TCP handler socket - handle byteperbyte readwrite. */
+        comm_tcp,
+        /** HTTP handler socket */
+        comm_http,
+        /** AF_UNIX socket - for internal commands. */
+        comm_local,
+        /** raw - not DNS format - for pipe readers and writers */
+        comm_raw,
+    }
+    /** variable with type of socket, UDP,TCP-accept,TCP,pipe */
+    type;
 
-	/* -------- PROXYv2 ------- */
-	/** if set, PROXYv2 is expected on this connection */
-	int pp2_enabled;
-	/** header state for the PROXYv2 header (for TCP) */
-	enum {
-		/** no header encounter yet */
-		pp2_header_none = 0,
-		/** read the static part of the header */
-		pp2_header_init,
-		/** read the full header */
-		pp2_header_done
-	} pp2_header_state;
+    /* -------- PROXYv2 ------- */
+    /** if set, PROXYv2 is expected on this connection */
+    int pp2_enabled;
+    /** header state for the PROXYv2 header (for TCP) */
+    enum {
+        /** no header encounter yet */
+        pp2_header_none = 0,
+        /** read the static part of the header */
+        pp2_header_init,
+        /** read the full header */
+        pp2_header_done
+    } pp2_header_state;
 
-	/* ---------- Behaviour ----------- */
-	/** if set the connection is NOT closed on delete. */
-	int do_not_close;
+    /* ---------- Behaviour ----------- */
+    /** if set the connection is NOT closed on delete. */
+    int do_not_close;
 
-	/** if set, the connection is closed on error, on timeout,
-	    and after read/write completes. No callback is done. */
-	int tcp_do_close;
+    /** if set, the connection is closed on error, on timeout,
+        and after read/write completes. No callback is done. */
+    int tcp_do_close;
 
-	/** flag that indicates the stream is both written and read from. */
-	int tcp_write_and_read;
+    /** flag that indicates the stream is both written and read from. */
+    int tcp_write_and_read;
 
-	/** byte count for written length over write channel, for when
-	 * tcp_write_and_read is enabled.  When tcp_write_and_read is enabled,
-	 * this is the counter for writing, the one for reading is in the
-	 * commpoint.buffer sldns buffer.  The counter counts from 0 to
-	 * 2+tcp_write_pkt_len, and includes the tcp length bytes. */
-	size_t tcp_write_byte_count;
+    /** byte count for written length over write channel, for when
+     * tcp_write_and_read is enabled.  When tcp_write_and_read is enabled,
+     * this is the counter for writing, the one for reading is in the
+     * commpoint.buffer sldns buffer.  The counter counts from 0 to
+     * 2+tcp_write_pkt_len, and includes the tcp length bytes. */
+    size_t tcp_write_byte_count;
 
-	/** packet to write currently over the write channel. for when
-	 * tcp_write_and_read is enabled.  When tcp_write_and_read is enabled,
-	 * this is the buffer for the written packet, the commpoint.buffer
-	 * sldns buffer is the buffer for the received packet. */
-	uint8_t* tcp_write_pkt;
-	/** length of tcp_write_pkt in bytes */
-	size_t tcp_write_pkt_len;
+    /** packet to write currently over the write channel. for when
+     * tcp_write_and_read is enabled.  When tcp_write_and_read is enabled,
+     * this is the buffer for the written packet, the commpoint.buffer
+     * sldns buffer is the buffer for the received packet. */
+    uint8_t* tcp_write_pkt;
+    /** length of tcp_write_pkt in bytes */
+    size_t tcp_write_pkt_len;
 
-	/** if set try to read another packet again (over connection with
-	 * multiple packets), once set, tries once, then zero again,
-	 * so set it in the packet complete section.
-	 * The pointer itself has to be set before the callback is invoked,
-	 * when you set things up, and continue to exist also after the
-	 * commpoint is closed and deleted in your callback.  So that after
-	 * the callback cleans up netevent can see what it has to do.
-	 * Or leave NULL if it is not used at all. */
-	int* tcp_more_read_again;
+    /** if set try to read another packet again (over connection with
+     * multiple packets), once set, tries once, then zero again,
+     * so set it in the packet complete section.
+     * The pointer itself has to be set before the callback is invoked,
+     * when you set things up, and continue to exist also after the
+     * commpoint is closed and deleted in your callback.  So that after
+     * the callback cleans up netevent can see what it has to do.
+     * Or leave NULL if it is not used at all. */
+    int* tcp_more_read_again;
 
-	/** if set try to write another packet (over connection with
-	 * multiple packets), once set, tries once, then zero again,
-	 * so set it in the packet complete section.
-	 * The pointer itself has to be set before the callback is invoked,
-	 * when you set things up, and continue to exist also after the
-	 * commpoint is closed and deleted in your callback.  So that after
-	 * the callback cleans up netevent can see what it has to do.
-	 * Or leave NULL if it is not used at all. */
-	int* tcp_more_write_again;
+    /** if set try to write another packet (over connection with
+     * multiple packets), once set, tries once, then zero again,
+     * so set it in the packet complete section.
+     * The pointer itself has to be set before the callback is invoked,
+     * when you set things up, and continue to exist also after the
+     * commpoint is closed and deleted in your callback.  So that after
+     * the callback cleans up netevent can see what it has to do.
+     * Or leave NULL if it is not used at all. */
+    int* tcp_more_write_again;
 
-	/** if set, read/write completes:
-		read/write state of tcp is toggled.
-		buffer reset/bytecount reset.
-		this flag cleared.
-	    So that when that is done the callback is called. */
-	int tcp_do_toggle_rw;
+    /** if set, read/write completes:
+            read/write state of tcp is toggled.
+            buffer reset/bytecount reset.
+            this flag cleared.
+        So that when that is done the callback is called. */
+    int tcp_do_toggle_rw;
 
-	/** timeout in msec for TCP wait times for this connection */
-	int tcp_timeout_msec;
+    /** timeout in msec for TCP wait times for this connection */
+    int tcp_timeout_msec;
 
-	/** if set, tcp keepalive is enabled on this connection */
-	int tcp_keepalive;
+    /** if set, tcp keepalive is enabled on this connection */
+    int tcp_keepalive;
 
-	/** if set, checks for pending error from nonblocking connect() call.*/
-	int tcp_check_nb_connect;
+    /** if set, checks for pending error from nonblocking connect() call.*/
+    int tcp_check_nb_connect;
 
-	/** if set, check for connection limit on tcp accept. */
-	struct tcl_list* tcp_conn_limit;
-	/** the entry for the connection. */
-	struct tcl_addr* tcl_addr;
+    /** if set, check for connection limit on tcp accept. */
+    struct tcl_list* tcp_conn_limit;
+    /** the entry for the connection. */
+    struct tcl_addr* tcl_addr;
 
-	/** the structure to keep track of open requests on this channel */
-	struct tcp_req_info* tcp_req_info;
+    /** the structure to keep track of open requests on this channel */
+    struct tcp_req_info* tcp_req_info;
 
 #ifdef USE_MSG_FASTOPEN
-	/** used to track if the sendto() call should be done when using TFO. */
-	int tcp_do_fastopen;
+    /** used to track if the sendto() call should be done when using TFO. */
+    int tcp_do_fastopen;
 #endif
 
 #ifdef USE_DNSCRYPT
-	/** Is this a dnscrypt channel */
-	int dnscrypt;
-	/** encrypted buffer pointer. Either to perthread, or own buffer or NULL */
-	struct sldns_buffer* dnscrypt_buffer;
+    /** Is this a dnscrypt channel */
+    int dnscrypt;
+    /** encrypted buffer pointer. Either to perthread, or own buffer or NULL */
+    struct sldns_buffer* dnscrypt_buffer;
 #endif
-	/** number of queries outstanding on this socket, used by
-	 * outside network for udp ports */
-	int inuse;
-	/** the timestamp when the packet was received by the kernel */
-	struct timeval recv_tv;
-	/** callback when done.
-	    tcp_accept does not get called back, is NULL then.
-	    If a timeout happens, callback with timeout=1 is called.
-	    If an error happens, callback is called with error set
-	    nonzero. If not NETEVENT_NOERROR, it is an errno value.
-	    If the connection is closed (by remote end) then the
-	    callback is called with error set to NETEVENT_CLOSED=-1.
-	    If a timeout happens on the connection, the error is set to
-	    NETEVENT_TIMEOUT=-2.
-	    The reply_info can be copied if the reply needs to happen at a
-	    later time. It consists of a struct with commpoint and address.
-	    It can be passed to a msg send routine some time later.
-	    Note the reply information is temporary and must be copied.
-	    NULL is passed for_reply info, in cases where error happened.
+    /** number of queries outstanding on this socket, used by
+     * outside network for udp ports */
+    int inuse;
+    /** the timestamp when the packet was received by the kernel */
+    struct timeval recv_tv;
+    /** callback when done.
+        tcp_accept does not get called back, is NULL then.
+        If a timeout happens, callback with timeout=1 is called.
+        If an error happens, callback is called with error set
+        nonzero. If not NETEVENT_NOERROR, it is an errno value.
+        If the connection is closed (by remote end) then the
+        callback is called with error set to NETEVENT_CLOSED=-1.
+        If a timeout happens on the connection, the error is set to
+        NETEVENT_TIMEOUT=-2.
+        The reply_info can be copied if the reply needs to happen at a
+        later time. It consists of a struct with commpoint and address.
+        It can be passed to a msg send routine some time later.
+        Note the reply information is temporary and must be copied.
+        NULL is passed for_reply info, in cases where error happened.
 
-	    declare as:
-	    int my_callback(struct comm_point* c, void* my_arg, int error,
-		struct comm_reply *reply_info);
+        declare as:
+        int my_callback(struct comm_point* c, void* my_arg, int error,
+            struct comm_reply *reply_info);
 
-	    if the routine returns 0, nothing is done.
-	    Notzero, the buffer will be sent back to client.
-	    		For UDP this is done without changing the commpoint.
-			In TCP it sets write state.
-	*/
-	comm_point_callback_type* callback;
-	/** argument to pass to callback. */
-	void *cb_arg;
+        if the routine returns 0, nothing is done.
+        Notzero, the buffer will be sent back to client.
+                    For UDP this is done without changing the commpoint.
+                    In TCP it sets write state.
+    */
+    comm_point_callback_type* callback;
+    /** argument to pass to callback. */
+    void* cb_arg;
 
     coap_context_t* context;
 };
 
-void sockaddr_to_coap_address(struct sockaddr *addr, coap_address_t *coap_addr);
+void sockaddr_to_coap_address(struct sockaddr* addr, coap_address_t* coap_addr);
 
-static coap_session_t* setup_session (coap_context_t* context, struct in_addr ip_address);
+static coap_session_t* setup_session(coap_context_t* context, struct in_addr ip_address);
 
 /**
  * Structure only for making timeout events.
  */
 struct comm_timer {
-	/** the internal event stuff (derived) */
-	struct internal_timer* ev_timer;
+    /** the internal event stuff (derived) */
+    struct internal_timer* ev_timer;
 
-	/** callback function, takes user arg only */
-	void (*callback)(void*);
+    /** callback function, takes user arg only */
+    void (*callback)(void*);
 
-	/** callback user argument */
-	void* cb_arg;
+    /** callback user argument */
+    void* cb_arg;
 };
 
 /**
  * Structure only for signal events.
  */
 struct comm_signal {
-	/** the communication base */
-	struct comm_base* base;
+    /** the communication base */
+    struct comm_base* base;
 
-	/** the internal event stuff */
-	struct internal_signal* ev_signal;
+    /** the internal event stuff */
+    struct internal_signal* ev_signal;
 
-	/** callback function, takes signal number and user arg */
-	void (*callback)(int, void*);
+    /** callback function, takes signal number and user arg */
+    void (*callback)(int, void*);
 
-	/** callback user argument */
-	void* cb_arg;
+    /** callback user argument */
+    void* cb_arg;
 };
 
 /**
@@ -529,7 +537,7 @@ void comm_base_exit(struct comm_base* b);
  * @param arg: callback arg to pass to the functions.
  */
 void comm_base_set_slow_accept_handlers(struct comm_base* b,
-	void (*stop_accept)(void*), void (*start_accept)(void*), void* arg);
+    void (*stop_accept)(void*), void (*start_accept)(void*), void* arg);
 
 /**
  * Access internal data structure (for util/tube.c on windows)
@@ -552,13 +560,13 @@ struct ub_event_base* comm_base_internal(struct comm_base* b);
  * Sets timeout to NULL. Turns off TCP options.
  */
 struct comm_point* comm_point_create_udp(struct comm_base* base,
-	int fd, struct sldns_buffer* buffer, int pp2_enabled,
-	comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket,
+    int fd, struct sldns_buffer* buffer, int pp2_enabled,
+    comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket,
     enum listen_type, coap_context_t* context);
 
 struct comm_point* comm_point_create_coap(struct comm_base* base,
-	int fd, struct sldns_buffer* buffer, int pp2_enabled,
-	comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket,
+    int fd, struct sldns_buffer* buffer, int pp2_enabled,
+    comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket,
     enum listen_type, coap_context_t* context);
 
 /**
@@ -576,8 +584,8 @@ struct comm_point* comm_point_create_coap(struct comm_base* base,
  * Sets timeout to NULL. Turns off TCP options.
  */
 struct comm_point* comm_point_create_udp_ancil(struct comm_base* base,
-	int fd, struct sldns_buffer* buffer, int pp2_enabled,
-	comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket);
+    int fd, struct sldns_buffer* buffer, int pp2_enabled,
+    comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket);
 
 /**
  * Create a TCP listener comm point. Calls malloc.
@@ -608,12 +616,12 @@ struct comm_point* comm_point_create_udp_ancil(struct comm_base* base,
  * Inits timeout to NULL. All handlers are on the free list.
  */
 struct comm_point* comm_point_create_tcp(struct comm_base* base,
-	int fd, int num, int idle_timeout, int harden_large_queries,
-	uint32_t http_max_streams, char* http_endpoint,
-	struct tcl_list* tcp_conn_limit,
-	size_t bufsize, struct sldns_buffer* spoolbuf,
-	enum listen_type port_type, int pp2_enabled,
-	comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket);
+    int fd, int num, int idle_timeout, int harden_large_queries,
+    uint32_t http_max_streams, char* http_endpoint,
+    struct tcl_list* tcp_conn_limit,
+    size_t bufsize, struct sldns_buffer* spoolbuf,
+    enum listen_type port_type, int pp2_enabled,
+    comm_point_callback_type* callback, void* callback_arg, struct unbound_socket* socket);
 
 /**
  * Create an outgoing TCP commpoint. No file descriptor is opened, left at -1.
@@ -624,7 +632,7 @@ struct comm_point* comm_point_create_tcp(struct comm_base* base,
  * @return: the commpoint or NULL on error.
  */
 struct comm_point* comm_point_create_tcp_out(struct comm_base* base,
-	size_t bufsize, comm_point_callback_type* callback, void* callback_arg);
+    size_t bufsize, comm_point_callback_type* callback, void* callback_arg);
 
 /**
  * Create an outgoing HTTP commpoint. No file descriptor is opened, left at -1.
@@ -637,8 +645,8 @@ struct comm_point* comm_point_create_tcp_out(struct comm_base* base,
  * @return: the commpoint or NULL on error.
  */
 struct comm_point* comm_point_create_http_out(struct comm_base* base,
-	size_t bufsize, comm_point_callback_type* callback,
-	void* callback_arg, struct sldns_buffer* temp);
+    size_t bufsize, comm_point_callback_type* callback,
+    void* callback_arg, struct sldns_buffer* temp);
 
 /**
  * Create commpoint to listen to a local domain file descriptor.
@@ -650,8 +658,8 @@ struct comm_point* comm_point_create_http_out(struct comm_base* base,
  * @return: the commpoint or NULL on error.
  */
 struct comm_point* comm_point_create_local(struct comm_base* base,
-	int fd, size_t bufsize,
-	comm_point_callback_type* callback, void* callback_arg);
+    int fd, size_t bufsize,
+    comm_point_callback_type* callback, void* callback_arg);
 
 /**
  * Create commpoint to listen to a local domain pipe descriptor.
@@ -663,8 +671,8 @@ struct comm_point* comm_point_create_local(struct comm_base* base,
  * @return: the commpoint or NULL on error.
  */
 struct comm_point* comm_point_create_raw(struct comm_base* base,
-	int fd, int writing,
-	comm_point_callback_type* callback, void* callback_arg);
+    int fd, int writing,
+    comm_point_callback_type* callback, void* callback_arg);
 
 /**
  * Close a comm point fd.
@@ -702,10 +710,10 @@ void comm_point_drop_reply(struct comm_reply* repinfo);
  * @return: false on a failure.
  */
 int comm_point_send_udp_msg(struct comm_point* c, struct sldns_buffer* packet,
-	struct sockaddr* addr, socklen_t addrlen,int is_connected);
+    struct sockaddr* addr, socklen_t addrlen, int is_connected);
 
 int comm_point_send_coap_msg(struct comm_point* c, struct sldns_buffer* packet,
-	struct sockaddr* addr, socklen_t addrlen,int is_connected, coap_session_t* session, coap_pdu_t* response, struct pdu_response_data* pdu_wrapper);
+    struct sockaddr* addr, socklen_t addrlen, int is_connected, coap_session_t* session, coap_pdu_t* response, struct pdu_response_data* pdu_wrapper);
 
 /**
  * Stop listening for input on the commpoint. No callbacks will happen.
@@ -757,7 +765,7 @@ size_t comm_point_get_mem(struct comm_point* c);
  * @return: the new timer or NULL on error.
  */
 struct comm_timer* comm_timer_create(struct comm_base* base,
-	void (*cb)(void*), void* cb_arg);
+    void (*cb)(void*), void* cb_arg);
 
 /**
  * disable timer. Stops callbacks from happening.
@@ -800,7 +808,7 @@ size_t comm_timer_get_mem(struct comm_timer* timer);
  * @return: the signal struct or NULL on error.
  */
 struct comm_signal* comm_signal_create(struct comm_base* base,
-	void (*callback)(int, void*), void* cb_arg);
+    void (*callback)(int, void*), void* cb_arg);
 
 /**
  * Bind signal struct to catch a signal. A single comm_signal can be bound
@@ -827,7 +835,7 @@ void comm_signal_delete(struct comm_signal* comsig);
  *	out of the reading handler.
  */
 int comm_point_perform_accept(struct comm_point* c,
-	struct sockaddr_storage* addr, socklen_t* addrlen);
+    struct sockaddr_storage* addr, socklen_t* addrlen);
 
 /**** internal routines ****/
 
@@ -887,84 +895,84 @@ void comm_point_http_handle_callback(int fd, short event, void* arg);
  * HTTP2 session.  HTTP2 related info per comm point.
  */
 struct http2_session {
-	/** first item in list of streams */
-	struct http2_stream* first_stream;
+    /** first item in list of streams */
+    struct http2_stream* first_stream;
 #ifdef HAVE_NGHTTP2
-	/** nghttp2 session */
-	nghttp2_session *session;
-	/** store nghttp2 callbacks for easy reuse */
-	nghttp2_session_callbacks* callbacks;
+    /** nghttp2 session */
+    nghttp2_session* session;
+    /** store nghttp2 callbacks for easy reuse */
+    nghttp2_session_callbacks* callbacks;
 #endif
-	/** comm point containing buffer used to build answer in worker or
-	 * module */
-	struct comm_point* c;
-	/** session is instructed to get dropped (comm port will be closed) */
-	int is_drop;
-	/** postpone dropping the session, can be used to prevent dropping
-	 * while being in a callback */
-	int postpone_drop;
+    /** comm point containing buffer used to build answer in worker or
+     * module */
+    struct comm_point* c;
+    /** session is instructed to get dropped (comm port will be closed) */
+    int is_drop;
+    /** postpone dropping the session, can be used to prevent dropping
+     * while being in a callback */
+    int postpone_drop;
 };
 
 /** enum of HTTP status */
 enum http_status {
-	HTTP_STATUS_OK = 200,
-	HTTP_STATUS_BAD_REQUEST = 400,
-	HTTP_STATUS_NOT_FOUND = 404,
-	HTTP_STATUS_PAYLOAD_TOO_LARGE = 413,
-	HTTP_STATUS_URI_TOO_LONG = 414,
-	HTTP_STATUS_UNSUPPORTED_MEDIA_TYPE = 415,
-	HTTP_STATUS_NOT_IMPLEMENTED = 501
+    HTTP_STATUS_OK = 200,
+    HTTP_STATUS_BAD_REQUEST = 400,
+    HTTP_STATUS_NOT_FOUND = 404,
+    HTTP_STATUS_PAYLOAD_TOO_LARGE = 413,
+    HTTP_STATUS_URI_TOO_LONG = 414,
+    HTTP_STATUS_UNSUPPORTED_MEDIA_TYPE = 415,
+    HTTP_STATUS_NOT_IMPLEMENTED = 501
 };
 
 /**
  * HTTP stream. Part of list of HTTP2 streams per session.
  */
 struct http2_stream {
-	/** next stream in list per session */
-	struct http2_stream* next;
-	/** previous stream in list per session */
-	struct http2_stream* prev;
-	/** HTTP2 stream ID is an unsigned 31-bit integer */
-	int32_t stream_id;
-	/** HTTP method used for this stream */
-	enum {
-		HTTP_METHOD_POST = 1,
-		HTTP_METHOD_GET,
-		HTTP_METHOD_UNSUPPORTED
-	} http_method;
-	/** message contains invalid content type */
-	int invalid_content_type;
-	/** message body content type */
-	size_t content_length;
-	/** HTTP response status */
-	enum http_status status;
-	/** request for non existing endpoint */
-	int invalid_endpoint;
-	/** query in request is too large */
-	int query_too_large;
-	/** buffer to store query into. Can't use session shared buffer as query
-	 * can arrive in parts, intertwined with frames for other queries. */
-	struct sldns_buffer* qbuffer;
-	/** buffer to store response into. Can't use shared buffer as a next
-	 * query read callback can overwrite it before it is send out. */
-	struct sldns_buffer* rbuffer;
-	/** mesh area containing mesh state */
-	struct mesh_area* mesh;
-	/** mesh state for query. Used to remove mesh reply before closing
-	 * stream. */
-	struct mesh_state* mesh_state;
+    /** next stream in list per session */
+    struct http2_stream* next;
+    /** previous stream in list per session */
+    struct http2_stream* prev;
+    /** HTTP2 stream ID is an unsigned 31-bit integer */
+    int32_t stream_id;
+    /** HTTP method used for this stream */
+    enum {
+        HTTP_METHOD_POST = 1,
+        HTTP_METHOD_GET,
+        HTTP_METHOD_UNSUPPORTED
+    } http_method;
+    /** message contains invalid content type */
+    int invalid_content_type;
+    /** message body content type */
+    size_t content_length;
+    /** HTTP response status */
+    enum http_status status;
+    /** request for non existing endpoint */
+    int invalid_endpoint;
+    /** query in request is too large */
+    int query_too_large;
+    /** buffer to store query into. Can't use session shared buffer as query
+     * can arrive in parts, intertwined with frames for other queries. */
+    struct sldns_buffer* qbuffer;
+    /** buffer to store response into. Can't use shared buffer as a next
+     * query read callback can overwrite it before it is send out. */
+    struct sldns_buffer* rbuffer;
+    /** mesh area containing mesh state */
+    struct mesh_area* mesh;
+    /** mesh state for query. Used to remove mesh reply before closing
+     * stream. */
+    struct mesh_state* mesh_state;
 };
 
 #ifdef HAVE_NGHTTP2
 /** nghttp2 receive cb. Read from SSL connection into nghttp2 buffer */
 ssize_t http2_recv_cb(nghttp2_session* session, uint8_t* buf,
-	size_t len, int flags, void* cb_arg);
+    size_t len, int flags, void* cb_arg);
 /** nghttp2 send callback. Send from nghttp2 buffer to ssl socket */
 ssize_t http2_send_cb(nghttp2_session* session, const uint8_t* buf,
-	size_t len, int flags, void* cb_arg);
+    size_t len, int flags, void* cb_arg);
 /** nghttp2 callback on closing stream */
 int http2_stream_close_cb(nghttp2_session* session, int32_t stream_id,
-	uint32_t error_code, void* cb_arg);
+    uint32_t error_code, void* cb_arg);
 #endif
 
 /**
@@ -980,12 +988,12 @@ struct http2_stream* http2_stream_create(int32_t stream_id);
  * @param h2_stream: stream to add to session list
  */
 void http2_session_add_stream(struct http2_session* h2_session,
-	struct http2_stream* h2_stream);
+    struct http2_stream* h2_stream);
 
 /** Add mesh state to stream. To be able to remove mesh reply on stream closure
  */
 void http2_stream_add_meshstate(struct http2_stream* h2_stream,
-	struct mesh_area* mesh, struct mesh_state* m);
+    struct mesh_area* mesh, struct mesh_state* m);
 
 /**
  * This routine is published for checks and tests, and is only used internally.

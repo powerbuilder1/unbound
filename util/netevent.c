@@ -655,6 +655,7 @@ comm_point_send_coap_msg(struct comm_point *c, sldns_buffer* packet,
 	log_assert(addr && addrlen > 0);
 	if(!is_connected) {
         printf("SEND COAP AWNSER\n");
+        // TODO: add t_down_out_c
         coap_send(session, own_response);
 	} else {
         // printf("SEND COAP AWNSER\n");
@@ -1483,6 +1484,8 @@ comm_point_udp_callback(int fd, short event, void* arg)
 void
 comm_point_oscore_callback(int fd, short event, void* arg)
 {
+    // TODO: Measure t_u_up_in_c
+    //
 	printf("[netevent.c // comm_point_oscore_callback()] Called callback function for oscore requests\n");
     struct comm_point* cp = (struct comm_point*)arg;
 	struct comm_reply rep;
@@ -4226,6 +4229,8 @@ comm_point_http_handle_callback(int fd, short event, void* arg)
 		return;
 	}
 	if(event&UB_EV_READ) {
+        printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><\n");
+        printf("[netevent.c // comm_point_http2_handle_read()] HTTP packet received! \n");
 		if(!comm_point_http_handle_read(fd, c)) {
 			reclaim_http_handler(c);
 			if(!c->tcp_do_close) {
