@@ -1843,16 +1843,6 @@ void extract_pdu_info(const coap_pdu_t* pdu, struct pdu_response_data* data)
     }
 }
 
-#include <coap3/coap.h>
-
-// Define OSCORE Option Number based on standard or implementation
-
-typedef enum {
-    UNENCRYPTED_OPTION_NUMBER = 0,
-    OSCORE_OPTION_NUMBER = 16,
-    DTLS_OPTION_NUMBER = 15
-} option_type;
-
 int check_message_type(const coap_pdu_t* pdu)
 {
     coap_opt_iterator_t opt_iter;
@@ -1889,15 +1879,22 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
     const coap_pdu_t* request, const coap_string_t* query,
     coap_pdu_t* response)
 {
+    struct comm_point* cp = coap_resource_get_userdata(resource);
+    printf("Comm POINTlol FD: %d\n", cp->fd);
+
+    size_t size;
+    uint8_t* data;
+    struct comm_reply rep;
+    struct pdu_response_data* pdu_wrapper = (struct pdu_response_data*)malloc(sizeof(struct pdu_response_data));
 
     double current_time = current_time_sec();
 
     coap_context_t* context = coap_session_get_context(session);
 
     /*
-    if (coap_session_get_proto(session) == COAP_PROTO_UDP && !coap_context_has_oscore(context)) {
-    }
-    */
+       if (coap_session_get_proto(session) == COAP_PROTO_UDP && !coap_context_has_oscore(context)) {
+       }
+       */
 
     FILE* file;
     switch (check_message_type(request)) {
@@ -1910,6 +1907,7 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
             printf("Write to file\n");
             fprintf(file, "%.9f\n", current_time);
             fclose(file);
+            pdu_wrapper->option_type = OSCORE_OPTION_NUMBER;
             printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
             printf("IS OSCORE \n");
             break;
@@ -1923,6 +1921,7 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
             printf("Write to file\n");
             fprintf(file, "%.9f\n", current_time);
             fclose(file);
+            pdu_wrapper->option_type = DTLS_OPTION_NUMBER;
             printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
             printf("IS DTLS\n");
             break;
@@ -1936,6 +1935,7 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
             printf("Write to file\n");
             fprintf(file, "%.9f\n", current_time);
             fclose(file);
+            pdu_wrapper->option_type = UNENCRYPTED_OPTION_NUMBER;
             printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
             printf("IS UNENCRYPTED\n");
             break;
@@ -1944,15 +1944,6 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
 
     print_all_options(request);
 
-    struct comm_point* cp = coap_resource_get_userdata(resource);
-    printf("Comm POINTlol FD: %d\n", cp->fd);
-
-    size_t size;
-    uint8_t* data;
-    DNSMeasurement* measurement = malloc(sizeof(DNSMeasurement));
-    struct comm_reply rep;
-    struct pdu_response_data* pdu_wrapper = (struct pdu_response_data*)malloc(sizeof(struct pdu_response_data));
-    rep.measurements = measurement;
     rep.c = (struct comm_point*)cp;
     rep.session = session;
     rep.response = response;
@@ -2024,6 +2015,51 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
         coap_pdu_set_code(response, COAP_RESPONSE_CODE_CONTENT);
 
         coap_add_data(response, buffer_length, (const uint8_t*)buffer_data);
+
+        current_time = current_time_sec();
+
+        FILE* file;
+        switch (pdu_wrapper->option_type) {
+        case OSCORE_OPTION_NUMBER:
+            file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_oscore.csv", "a"); // Open the CSV file in append mode
+            if (file == NULL) {
+                perror("Failed to open file");
+                return;
+            } else {
+                printf("Write to file\n");
+                fprintf(file, "%.9f\n", current_time);
+                fclose(file);
+                printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                printf("IS OSCORE \n");
+                break;
+            }
+        case DTLS_OPTION_NUMBER:
+            file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_dtls.csv", "a"); // Open the CSV file in append mode
+            if (file == NULL) {
+                perror("Failed to open file");
+                return;
+            } else {
+                printf("Write to file\n");
+                fprintf(file, "%.9f\n", current_time);
+                fclose(file);
+                printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                printf("IS DTLS\n");
+                break;
+            }
+        case UNENCRYPTED_OPTION_NUMBER:
+            file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_unencrypted.csv", "a"); // Open the CSV file in append mode
+            if (file == NULL) {
+                perror("Failed to open file");
+                return;
+            } else {
+                printf("Write to file\n");
+                fprintf(file, "%.9f\n", current_time);
+                fclose(file);
+                printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                printf("IS UNENCRYPTED\n");
+                break;
+            }
+        }
     } else {
         printf("MID: %d", pdu_wrapper->mid);
     }

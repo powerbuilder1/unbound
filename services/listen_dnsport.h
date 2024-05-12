@@ -42,8 +42,8 @@
 #ifndef LISTEN_DNSPORT_H
 #define LISTEN_DNSPORT_H
 
-#include "util/netevent.h"
 #include "daemon/acl_list.h"
+#include "util/netevent.h"
 #include <coap3/coap_resource.h>
 #ifdef HAVE_NGHTTP2_NGHTTP2_H
 #include <nghttp2/nghttp2.h>
@@ -60,31 +60,30 @@ struct tcl_list;
  * Contains list of query-listen sockets.
  */
 struct listen_dnsport {
-	/** Base for select calls */
-	struct comm_base* base;
+    /** Base for select calls */
+    struct comm_base* base;
 
-	/** buffer shared by UDP connections, since there is only one
-	    datagram at any time. */
-	struct sldns_buffer* udp_buff;
+    /** buffer shared by UDP connections, since there is only one
+        datagram at any time. */
+    struct sldns_buffer* udp_buff;
 #ifdef USE_DNSCRYPT
-	struct sldns_buffer* dnscrypt_udp_buff;
+    struct sldns_buffer* dnscrypt_udp_buff;
 #endif
-	/** list of comm points used to get incoming events */
-	struct listen_list* cps;
+    /** list of comm points used to get incoming events */
+    struct listen_list* cps;
 };
 
 /**
  * Single linked list to store event points.
  */
 struct listen_list {
-	/** next in list */
-	struct listen_list* next;
-	/** event info */
-	struct comm_point* com;
+    /** next in list */
+    struct listen_list* next;
+    /** event info */
+    struct comm_point* com;
 };
 
-
-enum CoAPSecurityMode{
+enum CoAPSecurityMode {
     CoAPSecurityMode_Unencrypted,
     CoAPSecurityMode_DTLS,
     CoAPSecurityMode_OSCORE,
@@ -95,39 +94,44 @@ enum CoAPSecurityMode{
  * type of ports
  */
 enum listen_type {
-	/** udp type */
-	listen_type_udp,
-	/** tcp type */
-	listen_type_tcp,
-	/** udp ipv6 (v4mapped) for use with ancillary data */
-	listen_type_udpancil,
-	/** ssl over tcp type */
-	listen_type_ssl,
-	/** udp type  + dnscrypt*/
-	listen_type_udp_dnscrypt,
-	/** tcp type + dnscrypt */
-	listen_type_tcp_dnscrypt,
-	/** udp ipv6 (v4mapped) for use with ancillary data + dnscrypt*/
-	listen_type_udpancil_dnscrypt,
-	/** HTTP(2) over TLS over TCP */
-	listen_type_http,
+    /** udp type */
+    listen_type_udp,
+    /** tcp type */
+    listen_type_tcp,
+    /** udp ipv6 (v4mapped) for use with ancillary data */
+    listen_type_udpancil,
+    /** ssl over tcp type */
+    listen_type_ssl,
+    /** udp type  + dnscrypt*/
+    listen_type_udp_dnscrypt,
+    /** tcp type + dnscrypt */
+    listen_type_tcp_dnscrypt,
+    /** udp ipv6 (v4mapped) for use with ancillary data + dnscrypt*/
+    listen_type_udpancil_dnscrypt,
+    /** HTTP(2) over TLS over TCP */
+    listen_type_http,
     /** COAP over UDP **/
     listen_type_coap
 };
 
+typedef enum {
+    UNENCRYPTED_OPTION_NUMBER = 0,
+    OSCORE_OPTION_NUMBER = 16,
+    DTLS_OPTION_NUMBER = 15
+} option_type;
 
 /*
  * socket properties (just like NSD nsd_socket structure definition)
  */
 struct unbound_socket {
-	/** socket-address structure */
-	struct addrinfo* addr;
-	/** socket descriptor returned by socket() syscall */
-	int s;
-	/** address family (AF_INET/IF_INET6) */
-	int fam;
-	/** ACL on the socket (listening interface) */
-	struct acl_addr* acl;
+    /** socket-address structure */
+    struct addrinfo* addr;
+    /** socket descriptor returned by socket() syscall */
+    int s;
+    /** address family (AF_INET/IF_INET6) */
+    int fam;
+    /** ACL on the socket (listening interface) */
+    struct acl_addr* acl;
 };
 
 /**
@@ -135,20 +139,19 @@ struct unbound_socket {
  * opened for use by all threads.
  */
 struct listen_port {
-	/** next in list */
-	struct listen_port* next;
-	/** file descriptor, open and ready for use */
-	int fd;
-	/** type of file descriptor, udp or tcp */
-	enum listen_type ftype;
-	/** if the port should support PROXYv2 */
-	int pp2_enabled;
-	/** fill in unbound_socket structure for every opened socket at
-	 * Unbound startup */
-	struct unbound_socket* socket;
+    /** next in list */
+    struct listen_port* next;
+    /** file descriptor, open and ready for use */
+    int fd;
+    /** type of file descriptor, udp or tcp */
+    enum listen_type ftype;
+    /** if the port should support PROXYv2 */
+    int pp2_enabled;
+    /** fill in unbound_socket structure for every opened socket at
+     * Unbound startup */
+    struct unbound_socket* socket;
     /** coap context **/
     coap_context_t* context;
-
 };
 
 void free_pdu_response_data(struct pdu_response_data* data);
@@ -167,7 +170,7 @@ void free_pdu_response_data(struct pdu_response_data* data);
  * @return: linked list of ports or NULL on error.
  */
 struct listen_port* listening_ports_open(struct config_file* cfg,
-	char** ifs, int num_ifs, int* reuseport);
+    char** ifs, int num_ifs, int* reuseport);
 
 /**
  * Close and delete the (list of) listening ports.
@@ -186,7 +189,7 @@ struct config_strlist;
  * @return 0 on failure.
  */
 int resolve_interface_names(char** ifs, int num_ifs,
-	struct config_strlist* list, char*** resif, int* num_resif);
+    struct config_strlist* list, char*** resif, int* num_resif);
 
 /**
  * Create commpoints with for this thread for the shared ports.
@@ -211,11 +214,11 @@ int resolve_interface_names(char** ifs, int num_ifs,
  */
 struct listen_dnsport*
 listen_create(struct comm_base* base, struct listen_port* ports,
-	size_t bufsize, int tcp_accept_count, int tcp_idle_timeout,
-	int harden_large_queries, uint32_t http_max_streams,
-	char* http_endpoint, int http_notls, struct tcl_list* tcp_conn_limit,
-	void* sslctx, struct dt_env* dtenv, comm_point_callback_type* cb,
-	void *cb_arg);
+    size_t bufsize, int tcp_accept_count, int tcp_idle_timeout,
+    int harden_large_queries, uint32_t http_max_streams,
+    char* http_endpoint, int http_notls, struct tcl_list* tcp_conn_limit,
+    void* sslctx, struct dt_env* dtenv, comm_point_callback_type* cb,
+    void* cb_arg);
 
 /**
  * delete the listening structure
@@ -264,7 +267,7 @@ void listen_start_accept(struct listen_dnsport* listen);
  * 	if enabled with value 2 IP6ONLY option is disabled.
  * @param inuse: on error, this is set true if the port was in use.
  * @param noproto: on error, this is set true if cause is that the
-	IPv6 proto (family) is not available.
+        IPv6 proto (family) is not available.
  * @param rcv: set size on rcvbuf with socket option, if 0 it is not set.
  * @param snd: set size on sndbuf with socket option, if 0 it is not set.
  * @param listen: if true, this is a listening UDP port, eg port 53, and
@@ -278,8 +281,8 @@ void listen_start_accept(struct listen_dnsport* listen);
  * @return: the socket. -1 on error.
  */
 int create_udp_sock(int family, int socktype, struct sockaddr* addr,
-	socklen_t addrlen, int v6only, int* inuse, int* noproto, int rcv,
-	int snd, int listen, int* reuseport, int transparent, int freebind, int use_systemd, int dscp,
+    socklen_t addrlen, int v6only, int* inuse, int* noproto, int rcv,
+    int snd, int listen, int* reuseport, int transparent, int freebind, int use_systemd, int dscp,
     coap_context_t* context, enum listen_type ftype, enum CoAPSecurityMode coap_sec_mode);
 
 /**
@@ -297,9 +300,9 @@ int create_udp_sock(int family, int socktype, struct sockaddr* addr,
  * @param dscp: DSCP to use.
  * @return: the socket. -1 on error.
  */
-int create_tcp_accept_sock(struct addrinfo *addr, int v6only, int* noproto,
-	int* reuseport, int transparent, int mss, int nodelay, int freebind,
-	int use_systemd, int dscp);
+int create_tcp_accept_sock(struct addrinfo* addr, int v6only, int* noproto,
+    int* reuseport, int transparent, int mss, int nodelay, int freebind,
+    int use_systemd, int dscp);
 
 /**
  * Create and bind local listening socket
@@ -316,59 +319,59 @@ int create_local_accept_sock(const char* path, int* noproto, int use_systemd);
  * are asked for but not yet answered back.
  */
 struct tcp_req_info {
-	/** the TCP comm point for this.  Its buffer is used for read/write */
-	struct comm_point* cp;
-	/** the buffer to use to spool reply from mesh into,
-	 * it can then be copied to the result list and written.
-	 * it is a pointer to the shared udp buffer. */
-	struct sldns_buffer* spool_buffer;
-	/** are we in worker_handle function call (for recursion callback)*/
-	int in_worker_handle;
-	/** is the comm point dropped (by worker handle).
-	 * That means we have to disconnect the channel. */
-	int is_drop;
-	/** is the comm point set to send_reply (by mesh new client in worker
-	 * handle), if so answer is available in c.buffer */
-	int is_reply;
-	/** read channel has closed, just write pending results */
-	int read_is_closed;
-	/** read again */
-	int read_again;
-	/** number of outstanding requests */
-	int num_open_req;
-	/** list of outstanding requests */
-	struct tcp_req_open_item* open_req_list;
-	/** number of pending writeable results */
-	int num_done_req;
-	/** list of pending writable result packets, malloced one at a time */
-	struct tcp_req_done_item* done_req_list;
+    /** the TCP comm point for this.  Its buffer is used for read/write */
+    struct comm_point* cp;
+    /** the buffer to use to spool reply from mesh into,
+     * it can then be copied to the result list and written.
+     * it is a pointer to the shared udp buffer. */
+    struct sldns_buffer* spool_buffer;
+    /** are we in worker_handle function call (for recursion callback)*/
+    int in_worker_handle;
+    /** is the comm point dropped (by worker handle).
+     * That means we have to disconnect the channel. */
+    int is_drop;
+    /** is the comm point set to send_reply (by mesh new client in worker
+     * handle), if so answer is available in c.buffer */
+    int is_reply;
+    /** read channel has closed, just write pending results */
+    int read_is_closed;
+    /** read again */
+    int read_again;
+    /** number of outstanding requests */
+    int num_open_req;
+    /** list of outstanding requests */
+    struct tcp_req_open_item* open_req_list;
+    /** number of pending writeable results */
+    int num_done_req;
+    /** list of pending writable result packets, malloced one at a time */
+    struct tcp_req_done_item* done_req_list;
 };
 
 /**
  * List of open items in TCP channel
  */
 struct tcp_req_open_item {
-	/** next in list */
-	struct tcp_req_open_item* next;
-	/** the mesh area of the mesh_state */
-	struct mesh_area* mesh;
-	/** the mesh state */
-	struct mesh_state* mesh_state;
+    /** next in list */
+    struct tcp_req_open_item* next;
+    /** the mesh area of the mesh_state */
+    struct mesh_area* mesh;
+    /** the mesh state */
+    struct mesh_state* mesh_state;
 };
 
 /**
  * List of done items in TCP channel
  */
 struct tcp_req_done_item {
-	/** next in list */
-	struct tcp_req_done_item* next;
-	/** the buffer with packet contents */
-	uint8_t* buf;
-	/** length of the buffer */
-	size_t len;
+    /** next in list */
+    struct tcp_req_done_item* next;
+    /** the buffer with packet contents */
+    uint8_t* buf;
+    /** length of the buffer */
+    size_t len;
 };
 
-void extract_pdu_info(const coap_pdu_t *pdu, struct pdu_response_data *data);
+void extract_pdu_info(const coap_pdu_t* pdu, struct pdu_response_data* data);
 
 /**
  * Create tcp request info structure that keeps track of open
@@ -400,7 +403,7 @@ void tcp_req_info_clear(struct tcp_req_info* req);
  * @param m: the state removed from the list.
  */
 void tcp_req_info_remove_mesh_state(struct tcp_req_info* req,
-	struct mesh_state* m);
+    struct mesh_state* m);
 
 /**
  * Handle write done of the last result packet
@@ -426,7 +429,7 @@ void tcp_req_info_handle_readdone(struct tcp_req_info* req);
  * @return 0 on failure (malloc failure).
  */
 int tcp_req_info_add_meshstate(struct tcp_req_info* req,
-	struct mesh_area* mesh, struct mesh_state* m);
+    struct mesh_area* mesh, struct mesh_state* m);
 
 /**
  * Send reply on tcp simultaneous answer channel.  May queue it up.
@@ -485,7 +488,18 @@ void setup_endpoint(coap_context_t* context, coap_endpoint_t** endpoint, int por
 static void init_resources(coap_context_t* ctx, struct comm_point* cp);
 
 static void hnd_get_dns(coap_resource_t* resource, coap_session_t* session,
-        const coap_pdu_t* request, const coap_string_t* query,
-        coap_pdu_t* response);
+    const coap_pdu_t* request, const coap_string_t* query,
+    coap_pdu_t* response);
+
+double current_time_sec();
+
+struct pdu_response_data {
+    coap_pdu_type_t type;
+    coap_pdu_code_t code;
+    coap_mid_t mid;
+    struct coap_bin_const_t* token;
+    struct coap_optlist_t* options;
+    option_type option_type;
+};
 
 #endif /* LISTEN_DNSPORT_H */

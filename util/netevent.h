@@ -124,21 +124,6 @@ struct comm_base {
     void* cb_arg;
 };
 
-struct pdu_response_data {
-    coap_pdu_type_t type;
-    coap_pdu_code_t code;
-    coap_mid_t mid;
-    struct coap_bin_const_t* token;
-    struct coap_optlist_t* options;
-};
-
-typedef struct {
-    double t_up_in_h;
-    double t_down_out_h;
-    double t_up_in_c;
-    double t_down_out_c;
-} DNSMeasurement;
-
 /**
  * Reply information for a communication point.
  */
@@ -187,8 +172,6 @@ struct comm_reply {
     coap_pdu_t* response;
 
     struct pdu_response_data* pdu_wrapper;
-
-    DNSMeasurement* measurements;
 };
 
 /**

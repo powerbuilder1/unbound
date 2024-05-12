@@ -612,8 +612,8 @@ comm_point_send_coap_msg(struct comm_point *c, sldns_buffer* packet,
 	struct sockaddr* addr, socklen_t addrlen, int is_connected, coap_session_t* session, coap_pdu_t* response, struct pdu_response_data* pdu_wrapper)
 {
     coap_address_t dst;
-
 	ssize_t sent;
+    double current_time;
     coap_pdu_t* own_response = create_pdu_from_response_data(session, pdu_wrapper);
 
     coap_bin_const_t token = coap_pdu_get_token(own_response);
@@ -656,6 +656,49 @@ comm_point_send_coap_msg(struct comm_point *c, sldns_buffer* packet,
 	if(!is_connected) {
         printf("SEND COAP AWNSER\n");
         // TODO: add t_down_out_c
+        current_time = current_time_sec();
+        FILE* file;
+        switch (pdu_wrapper->option_type) {
+        case OSCORE_OPTION_NUMBER:
+            file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_oscore.csv", "a"); // Open the CSV file in append mode
+            if (file == NULL) {
+                perror("Failed to open file");
+                return 0;
+            } else {
+                printf("Write to file\n");
+                fprintf(file, "%.9f\n", current_time);
+                fclose(file);
+                printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                printf("IS OSCORE \n");
+                break;
+            }
+        case DTLS_OPTION_NUMBER:
+            file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_dtls.csv", "a"); // Open the CSV file in append mode
+            if (file == NULL) {
+                perror("Failed to open file");
+                return 0;
+            } else {
+                printf("Write to file\n");
+                fprintf(file, "%.9f\n", current_time);
+                fclose(file);
+                printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                printf("IS DTLS\n");
+                break;
+            }
+        case UNENCRYPTED_OPTION_NUMBER:
+            file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_unencrypted.csv", "a"); // Open the CSV file in append mode
+            if (file == NULL) {
+                perror("Failed to open file");
+                return 0;
+            } else {
+                printf("Write to file\n");
+                fprintf(file, "%.9f\n", current_time);
+                fclose(file);
+                printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                printf("IS UNENCRYPTED\n");
+                break;
+            }
+        }
         coap_send(session, own_response);
 	} else {
         // printf("SEND COAP AWNSER\n");
@@ -4229,8 +4272,6 @@ comm_point_http_handle_callback(int fd, short event, void* arg)
 		return;
 	}
 	if(event&UB_EV_READ) {
-        printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><\n");
-        printf("[netevent.c // comm_point_http2_handle_read()] HTTP packet received! \n");
 		if(!comm_point_http_handle_read(fd, c)) {
 			reclaim_http_handler(c);
 			if(!c->tcp_do_close) {
