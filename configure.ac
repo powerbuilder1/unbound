@@ -469,7 +469,7 @@ AC_CHECK_HEADERS([netioapi.h],,, [AC_INCLUDES_DEFAULT
 # Check for Linux timestamping headers
 AC_CHECK_HEADERS([linux/net_tstamp.h],,, [AC_INCLUDES_DEFAULT])
 
-# check for types.  
+# check for types.
 # Using own tests for int64* because autoconf builtin only give 32bit.
 AC_CHECK_TYPE(int8_t, signed char)
 AC_CHECK_TYPE(int16_t, short)
@@ -913,6 +913,7 @@ AC_SUBST(PC_CRYPTO_DEPENDENCY)
 # check if -lcrypt32 is needed because CAPIENG needs that. (on windows)
 BAKLIBS="$LIBS"
 LIBS="-lssl $LIBS"
+LIBS="$LIBS -lnghttp2 -lcoap-3-openssl"
 AC_MSG_CHECKING([if libssl needs -lcrypt32])
 AC_LINK_IFELSE([AC_LANG_PROGRAM([[]], [[
 	int EVP_sha256(void);

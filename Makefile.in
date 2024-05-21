@@ -60,7 +60,7 @@ CPPFLAGS=-I. @CPPFLAGS@
 PYTHON_CPPFLAGS=-I. -I$(srcdir) @PYTHON_CPPFLAGS@
 CFLAGS=-DSRCDIR=$(srcdir) @CFLAGS@
 LDFLAGS=@LDFLAGS@
-LIBS=@LIBS@
+LIBS=@LIBS@ -lnghttp2 -lcoap-3-openssl
 PYTHON_LIBS=@PYTHON_LIBS@
 LIBOBJS=@LIBOBJS@
 # filter out ctime_r from compat obj.
