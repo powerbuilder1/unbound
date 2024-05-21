@@ -58,3 +58,5 @@
 /testdata/.perfstats.txt
 /doc/html
 /doc/xml
+.cache
+.VSCodeCounter
