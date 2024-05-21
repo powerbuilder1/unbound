@@ -1767,6 +1767,11 @@ comm_point_tcp_win_bio_cb(struct comm_point* c, void* thessl)
 /** Create http2 session server.  Per connection, after TCP accepted.*/
 static int http2_session_server_create(struct http2_session* h2_session)
 {
+    // TODO: measure t_s_up_in_h
+    double current_time = current_time_sec();
+    FILE* file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_up_in_https.csv", "a");
+    fprintf(file, "%.9f\n", current_time);
+    fclose(file);
 	log_assert(h2_session->callbacks);
 	h2_session->is_drop = 0;
 	if(nghttp2_session_server_new(&h2_session->session,
@@ -3650,6 +3655,7 @@ static struct http2_session* http2_session_create(struct comm_point* c)
 static void http2_session_delete(struct http2_session* h2_session)
 {
 #ifdef HAVE_NGHTTP2
+    printf("’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’ HTTP session delete\n");
 	if(h2_session->callbacks)
 		nghttp2_session_callbacks_del(h2_session->callbacks);
 	free(h2_session);
@@ -3695,6 +3701,9 @@ void http2_stream_add_meshstate(struct http2_stream* h2_stream,
 static void http2_session_server_delete(struct http2_session* h2_session)
 {
 #ifdef HAVE_NGHTTP2
+    double current_time = current_time_sec();
+
+    printf("’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’’ HTTP server delete\n");
 	struct http2_stream* h2_stream, *next;
 	nghttp2_session_del(h2_session->session); /* NULL input is fine */
 	h2_session->session = NULL;
@@ -4257,6 +4266,7 @@ comm_point_http_handle_write(int fd, struct comm_point* c)
 void
 comm_point_http_handle_callback(int fd, short event, void* arg)
 {
+    // TODO: HTTP handle callbac
 	struct comm_point* c = (struct comm_point*)arg;
 	log_assert(c->type == comm_http);
 	ub_comm_base_now(c->ev->base);

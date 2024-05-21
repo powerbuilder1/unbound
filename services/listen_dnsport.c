@@ -3176,6 +3176,11 @@ static int http2_submit_rst_stream(struct http2_session* h2_session,
  */
 int http2_submit_dns_response(struct http2_session* h2_session)
 {
+    // TODO: t_s_down_out_h
+    double current_time = current_time_sec();
+    FILE* file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_https.csv", "a");
+    fprintf(file, "%.9f\n", current_time);
+    fclose(file);
     int ret;
     nghttp2_data_provider data_prd;
     char status[4];
