@@ -660,7 +660,7 @@ comm_point_send_coap_msg(struct comm_point *c, sldns_buffer* packet,
         FILE* file;
         switch (pdu_wrapper->option_type) {
         case OSCORE_OPTION_NUMBER:
-            file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_oscore.csv", "a"); // Open the CSV file in append mode
+            file = fopen("/home/powerbuilder/ba/run/data/server_down_out_oscore.csv", "a"); // Open the CSV file in append mode
             if (file == NULL) {
                 perror("Failed to open file");
                 return 0;
@@ -673,7 +673,7 @@ comm_point_send_coap_msg(struct comm_point *c, sldns_buffer* packet,
                 break;
             }
         case DTLS_OPTION_NUMBER:
-            file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_dtls.csv", "a"); // Open the CSV file in append mode
+            file = fopen("/home/powerbuilder/ba/run/data/server_down_out_dtls.csv", "a"); // Open the CSV file in append mode
             if (file == NULL) {
                 perror("Failed to open file");
                 return 0;
@@ -686,7 +686,7 @@ comm_point_send_coap_msg(struct comm_point *c, sldns_buffer* packet,
                 break;
             }
         case UNENCRYPTED_OPTION_NUMBER:
-            file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_unencrypted.csv", "a"); // Open the CSV file in append mode
+            file = fopen("/home/powerbuilder/ba/run/data/server_down_out_unencrypted.csv", "a"); // Open the CSV file in append mode
             if (file == NULL) {
                 perror("Failed to open file");
                 return 0;
@@ -1769,7 +1769,7 @@ static int http2_session_server_create(struct http2_session* h2_session)
 {
     // TODO: measure t_s_up_in_h
     double current_time = current_time_sec();
-    FILE* file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_up_in_https.csv", "a");
+    FILE* file = fopen("/home/powerbuilder/ba/run/data/server_up_in_https.csv", "a");
     fprintf(file, "%.9f\n", current_time);
     fclose(file);
 	log_assert(h2_session->callbacks);
