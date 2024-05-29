@@ -1899,7 +1899,7 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
     FILE* file;
     switch (check_message_type(request)) {
     case OSCORE_OPTION_NUMBER:
-        file = fopen("/home/powerbuilder/ba/data/server_up_in_oscore.csv", "a"); // Open the CSV file in append mode
+        file = fopen("/home/powerbuilder/ba/run/data/server_up_in_oscore.csv", "a"); // Open the CSV file in append mode
         if (file == NULL) {
             perror("Failed to open file");
             return;
@@ -1913,7 +1913,7 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
             break;
         }
     case DTLS_OPTION_NUMBER:
-        file = fopen("/home/powerbuilder/ba/data/server_up_in_dtls.csv", "a"); // Open the CSV file in append mode
+        file = fopen("/home/powerbuilder/ba/run/data/server_up_in_dtls.csv", "a"); // Open the CSV file in append mode
         if (file == NULL) {
             perror("Failed to open file");
             return;
@@ -1927,7 +1927,7 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
             break;
         }
     case UNENCRYPTED_OPTION_NUMBER:
-        file = fopen("/home/powerbuilder/ba/data/server_up_in_unencrypted.csv", "a"); // Open the CSV file in append mode
+        file = fopen("/home/powerbuilder/ba/run/data/server_up_in_unencrypted.csv", "a"); // Open the CSV file in append mode
         if (file == NULL) {
             perror("Failed to open file");
             return;
@@ -3178,7 +3178,7 @@ int http2_submit_dns_response(struct http2_session* h2_session)
 {
     // TODO: t_s_down_out_h
     double current_time = current_time_sec();
-    FILE* file = fopen("/home/powbu/Documents/Uni/Bachelorarbeit/unbound_test_server/server_down_out_https.csv", "a");
+    FILE* file = fopen("/home/powerbuilder/ba/run/data/server_down_out_https.csv", "a");
     fprintf(file, "%.9f\n", current_time);
     fclose(file);
     int ret;
