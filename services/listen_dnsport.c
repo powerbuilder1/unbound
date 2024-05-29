@@ -2021,7 +2021,7 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
         FILE* file;
         switch (pdu_wrapper->option_type) {
         case OSCORE_OPTION_NUMBER:
-            file = fopen("/home/powerbuilder/ba/data/server_down_out_oscore.csv", "a"); // Open the CSV file in append mode
+            file = fopen("/home/powerbuilder/ba/run/data/server_down_out_oscore.csv", "a"); // Open the CSV file in append mode
             if (file == NULL) {
                 perror("Failed to open file");
                 return;
@@ -2034,7 +2034,7 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
                 break;
             }
         case DTLS_OPTION_NUMBER:
-            file = fopen("/home/powerbuilder/ba/data/server_down_out_dtls.csv", "a"); // Open the CSV file in append mode
+            file = fopen("/home/powerbuilder/ba/run/data/server_down_out_dtls.csv", "a"); // Open the CSV file in append mode
             if (file == NULL) {
                 perror("Failed to open file");
                 return;
@@ -2047,7 +2047,7 @@ hnd_fetch_new_dns(coap_resource_t* resource, coap_session_t* session,
                 break;
             }
         case UNENCRYPTED_OPTION_NUMBER:
-            file = fopen("/home/powerbuilder/ba/data/server_down_out_unencrypted.csv", "a"); // Open the CSV file in append mode
+            file = fopen("/home/powerbuilder/ba/run/data/server_down_out_unencrypted.csv", "a"); // Open the CSV file in append mode
             if (file == NULL) {
                 perror("Failed to open file");
                 return;
