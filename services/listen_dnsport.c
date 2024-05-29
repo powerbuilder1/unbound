@@ -1552,7 +1552,7 @@ static uint8_t oscore_config[] = "master_secret,hex,\"0102030405060708090a0b0c0d
     // "aead_alg,integer,10\n"
     // "hkdf_alg,integer,-10\n"
     ;
-static const char* oscore_seq_save_file = "/home/powbu/Documents/Uni/Bachelorarbeit/unbound/server.seq";
+static const char* oscore_seq_save_file = "/home/powerbuilder/ba/run/server.seq";
 static FILE* oscore_seq_num_fp = NULL;
 
 static int
