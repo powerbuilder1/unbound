@@ -1768,10 +1768,10 @@ comm_point_tcp_win_bio_cb(struct comm_point* c, void* thessl)
 static int http2_session_server_create(struct http2_session* h2_session)
 {
     // TODO: measure t_s_up_in_h
-    double current_time = current_time_sec();
-    FILE* file = fopen("/home/powerbuilder/ba/run/data/server_up_in_https.csv", "a");
-    fprintf(file, "%.9f\n", current_time);
-    fclose(file);
+    /*double current_time = current_time_sec();*/
+    /*FILE* file = fopen("/home/powerbuilder/ba/run/data/server_up_in_https.csv", "a");*/
+    /*fprintf(file, "%.9f\n", current_time);*/
+    /*fclose(file);*/
 	log_assert(h2_session->callbacks);
 	h2_session->is_drop = 0;
 	if(nghttp2_session_server_new(&h2_session->session,
