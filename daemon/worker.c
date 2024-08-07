@@ -1344,7 +1344,7 @@ int worker_handle_request(struct comm_point* c, void* arg, int error,
 
     if (c->type == comm_http) {
         double current_time = current_time_sec();
-        FILE* file = fopen("/home/powerbuilder/ba/run/data/server_down_out_https.csv", "a");
+        FILE* file = fopen("/home/powerbuilder/ba/run/data/server_up_in_https.csv", "a");
         fprintf(file, "%.9f\n", current_time);
         fclose(file);
     }
